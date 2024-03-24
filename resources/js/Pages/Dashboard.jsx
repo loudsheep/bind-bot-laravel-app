@@ -1,7 +1,8 @@
+import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({ auth, authoredBindBoards }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -11,8 +12,18 @@ export default function Dashboard({ auth }) {
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">You're logged in!</div>
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <div className='flex justify-between mb-10'>
+                            <h1 className='font-bold text-xl'>Your BindBoards</h1>
+                            <PrimaryButton className=''>Add new BindBoard</PrimaryButton>
+                        </div>
+                        <div className='flex flex-wrap'>
+                            {authoredBindBoards.map((value, idx) => (
+                                <div key={idx}>
+                                    {value.name}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
