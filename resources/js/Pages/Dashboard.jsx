@@ -19,8 +19,11 @@ export default function Dashboard({ auth, authoredBindBoards }) {
                         </div>
                         <div className='flex flex-wrap'>
                             {authoredBindBoards.map((value, idx) => (
-                                <div key={idx}>
-                                    {value.name}
+                                <div key={idx} className=''>
+                                    <a href={route('bindboard.show', value.hash)} className='text-blue-500'>
+                                        {value.name}
+                                    </a>
+                                    <br />
                                 </div>
                             ))}
                         </div>
