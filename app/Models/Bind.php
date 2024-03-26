@@ -22,4 +22,9 @@ class Bind extends Model
         'use_count',
         'active',
     ];
+
+    public function bind_board()
+    {
+        return $this->belongsTo(BindBoard::class);
+    }
 }

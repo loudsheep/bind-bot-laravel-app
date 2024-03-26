@@ -1,11 +1,62 @@
-import UploadNewBindModal from '@/Components/Modals/UploadNewBindModal';
+import Modal from '@/Components/Modal';
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import TextInput from '@/Components/TextInput';
+import { useForm } from '@inertiajs/react';
+import BindButton from '@/Components/BindButton';
+import SecondaryButton from '@/Components/SecondaryButton';
 
-export default function Show({ auth, bindboard }) {
+
+export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayBindUsingBot }) {
     const [showNewBindModal, setShowNewBindModal] = useState(false);
+    const [showPlayBindModal, setShowPlayBindModal] = useState(false);
+    const [bindToPlay, setBindToPlay] = useState(null);
+    const [audio, setAudio] = useState(null);
+    const [playing, setPlaying] = useState(false);
+
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: '',
+        bind: '',
+    });
+
+    const onCloseNewBindModal = () => setShowNewBindModal(false);
+    const onClosePlayBindModal = () => {
+        setShowPlayBindModal(false);
+        setPlaying(false);
+    };
+
+    const openPlayModal = (bind) => {
+        setShowPlayBindModal(true);
+        setBindToPlay(bind);
+        setAudio(new Audio(route('bind.file', bind.bind_path)));
+    };
+
+    const submit = (e) => {
+        e.preventDefault();
+        post(route('bind.create', bindboard.hash), {
+            onSuccess: () => onClose(),
+        });
+    };
+
+    const playAudio = () => setPlaying(true);
+
+    useEffect(() => {
+        if (audio) {
+            playing ? audio.play() : audio.pause();
+        }
+    }, [playing]);
+
+    useEffect(() => {
+        if (!audio) return;
+        audio.addEventListener('ended', () => setPlaying(false));
+        return () => {
+            audio.removeEventListener('ended', () => setPlaying(false));
+        };
+    }, [audio]);
 
     return (
         <AuthenticatedLayout
@@ -13,16 +64,83 @@ export default function Show({ auth, bindboard }) {
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{bindboard.name}</h2>}
         >
             <Head title="Dashboard" />
-            {showNewBindModal && (
-                <UploadNewBindModal onClose={() => setShowNewBindModal(false)} bindBoardHash={bindboard.hash}></UploadNewBindModal>
-            )}
+            <Modal show={showNewBindModal} onClose={onCloseNewBindModal} maxWidth='md'>
+                <div className="relative bg-white rounded-lg shadow">
+                    <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                        <h3 className="text-xl font-semibold text-gray-900">
+                            Upload your new Bind
+                        </h3>
+                        <button type="button" className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="authentication-modal" onClick={onCloseNewBindModal}>
+                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span className="sr-only">Close modal</span>
+                        </button>
+                    </div>
+                    <div className="p-4 md:p-5">
+                        <form className="space-y-4" onSubmit={submit}>
+                            <div>
+                                <InputLabel htmlFor="name" value="Name it:" />
+                                <TextInput id="name" type="text" name="name" value={data.name} required={true} className="mt-1 block w-full" autoComplete="username" isFocused={true} onChange={(e) => setData('name', e.target.value)} />
+                                <InputError message={errors.name} className="mt-2" />
+                            </div>
+                            <div>
+                                <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="file_input">Upload MP3 file:</label>
+                                <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="file_input" type="file" accept=".mp3" required={true} onChange={(e) => setData('bind', e.target.files[0])} />
+                                {errors.bind && (
+                                    <p className='text-sm text-red-600 '>
+                                        {message}
+                                    </p>
+                                )}
+                            </div>
+                            <button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Create your awesome Bind</button>
+                        </form>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal show={showPlayBindModal && bindToPlay !== null} onClose={onClosePlayBindModal} maxWidth='md' >
+                <div className="relative bg-white rounded-lg shadow">
+                    <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                        <h3 className="text-xl font-bold text-gray-900">
+                            {bindToPlay?.name}
+                        </h3>
+                        <button type="button" className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="authentication-modal" onClick={onCloseNewBindModal}>
+                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span className="sr-only">Close modal</span>
+                        </button>
+                    </div>
+                    <div className="p-4 md:p-5">
+                        {bindToPlay != null && (
+                            <div className='w-full flex justify-center items-center mb-5'>
+                                <audio controls>
+                                    <source src={route('bind.file', bindToPlay.bind_path)} type="audio/mpeg" />
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
+                        )}
+
+                        <div className='w-full flex'>
+                            <SecondaryButton className='flex-1 justify-center mr-1' onClick={playAudio}>Play here</SecondaryButton>
+                            <SecondaryButton className={'flex-1 justify-center ml-1 ' + (!canPlayBindUsingBot ? 'cursor-not-allowed' : '')} disabled={!canPlayBindUsingBot}>Play on server</SecondaryButton>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                        <div className='flex justify-between mb-10'>
+                        <div className='w-full flex justify-between mb-10'>
                             <h1 className='font-semi-bold text-xl'>Binds of <span className='font-bold'>{bindboard.name}</span> bindboard</h1>
-                            <PrimaryButton className='' onClick={() => setShowNewBindModal(true)}>Add new Bind</PrimaryButton>
+                            <PrimaryButton className={!canAddMoreBinds ? 'cursor-not-allowed' : ''} onClick={() => setShowNewBindModal(true)} disabled={!canAddMoreBinds}>Add new Bind</PrimaryButton>
+                        </div>
+                        <div className='flex flex-wrap mx-auto'>
+                            {binds.map((value, idx) => (
+                                <BindButton bindName={value.name} key={idx} onClick={() => openPlayModal(value)}></BindButton>
+                            ))}
                         </div>
                     </div>
                 </div>

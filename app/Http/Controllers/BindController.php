@@ -17,9 +17,9 @@ class BindController extends Controller
             'bind' => ['required', 'file', 'mimes:mp3'],
         ]);
 
-        $bindFileName = Str::random(50) . ".mp3";
-        $bindPath = Storage::put('binds', $request->bind);
+        if ($bindboard->binds()->count() >= $bindboard->max_allowed_binds) return back()->withErrors(['name' => 'Cannot add new Bind, bind limit depleted']);
 
+        $bindPath = str_replace('binds/', '', Storage::put('binds', $request->bind));
         $bind = new Bind([
             'created_by' => $request->user()->id,
             'bind_board_id' => $bindboard->id,
@@ -32,5 +32,12 @@ class BindController extends Controller
         $bind->save();
 
         return redirect()->back();
+    }
+
+    public function file(Request $request, Bind $bind)
+    {
+        // TODO authorization
+        if (!$bind->active) return abort(404);
+        return response()->file(Storage::path('binds/' . $bind->bind_path));
     }
 }

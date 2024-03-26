@@ -16,3 +16,5 @@ Route::prefix('/bindboard')->middleware('auth')->group(function () {
 Route::prefix('/bind')->middleware('auth')->group(function () {
     Route::post('/create/{bindboard:hash}', [BindController::class, 'create'])->name('bind.create');
 });
+
+Route::get('/binds/{bind:bind_path}', [BindController::class, 'file'])->middleware('auth')->name('bind.file');
