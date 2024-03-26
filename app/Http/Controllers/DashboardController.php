@@ -10,10 +10,12 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $authoredBindBoards = $request->user()->createdBindBoards()->get();
+        $authoredBindBoards = $request->user()->createdBindBoards();
+        $canCreateBindboards = $authoredBindBoards->count() < $request->user()->max_bind_boards;
 
         return Inertia::render('Dashboard', [
-            'authoredBindBoards' => $authoredBindBoards,
+            'authoredBindBoards' => $authoredBindBoards->get(),
+            'canCreateBindboards' => $canCreateBindboards,
         ]);
     }
 }

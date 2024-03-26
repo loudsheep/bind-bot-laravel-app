@@ -2,7 +2,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function Dashboard({ auth, authoredBindBoards }) {
+export default function Dashboard({ auth, authoredBindBoards, canCreateBindboards }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -15,7 +15,7 @@ export default function Dashboard({ auth, authoredBindBoards }) {
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                         <div className='flex justify-between mb-10'>
                             <h1 className='font-bold text-xl'>Your BindBoards</h1>
-                            <PrimaryButton className=''>Add new BindBoard</PrimaryButton>
+                            <PrimaryButton className={!canCreateBindboards ? 'cursor-not-allowed' : ''} disabled={!canCreateBindboards}>Add new BindBoard</PrimaryButton>
                         </div>
                         <div className='flex flex-wrap'>
                             {authoredBindBoards.map((value, idx) => (
