@@ -6,7 +6,6 @@ use App\Models\Bind;
 use App\Models\BindBoard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class BindController extends Controller
 {

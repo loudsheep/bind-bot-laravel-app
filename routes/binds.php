@@ -5,7 +5,6 @@ use App\Http\Controllers\BindController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/bindboard')->middleware('auth')->group(function () {
-    Route::get('/create', [BindBoardController::class, 'create'])->name('bindboard.create');
     Route::post('/create', [BindBoardController::class, 'store'])->name('bindboard.store');
     Route::get('/{bindboard:hash}', [BindBoardController::class, 'show'])->name('bindboard.show');
     Route::get('/{bindboard:hash}/edit', [BindBoardController::class, 'edit'])->name('bindboard.edit');
