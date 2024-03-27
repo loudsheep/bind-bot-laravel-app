@@ -20,4 +20,8 @@ class BindBoard extends Model
     public function binds() {
         return $this->hasMany(Bind::class);
     }
+
+    public function participants() {
+        return $this->hasMany(Participant::class);
+    }
 }

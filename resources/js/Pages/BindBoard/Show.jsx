@@ -42,7 +42,14 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
         });
     };
 
-    const playAudio = () => setPlaying(true);
+    const playAudio = () => {
+        setPlaying(true);
+
+        if (audio) {
+            audio.currentTime = 0;
+            audio.play();
+        }
+    };
 
     useEffect(() => {
         if (audio) {
@@ -115,7 +122,7 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
                     <div className="p-4 md:p-5">
                         {bindToPlay != null && (
                             <div className='w-full flex justify-center items-center mb-5'>
-                                <audio controls>
+                                <audio controls={true}>
                                     <source src={route('bind.file', bindToPlay.bind_path)} type="audio/mpeg" />
                                     Your browser does not support the audio element.
                                 </audio>
@@ -133,13 +140,18 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                        <div className='w-full flex justify-between mb-10'>
+                        <div className='w-full flex justify-between'>
                             <h1 className='font-semi-bold text-xl'>Binds of <span className='font-bold'>{bindboard.name}</span> bindboard</h1>
                             <PrimaryButton className={!canAddMoreBinds ? 'cursor-not-allowed' : ''} onClick={() => setShowNewBindModal(true)} disabled={!canAddMoreBinds}>Add new Bind</PrimaryButton>
                         </div>
-                        <div className='flex flex-wrap mx-auto'>
+                        {bindboard.description && (
+                            <div className='w-full flex justify-start'>
+                                <h3>{bindboard.description}</h3>
+                            </div>
+                        )}
+                        <div className='mt-10 flex flex-wrap mx-auto'>
                             {binds.map((value, idx) => (
-                                <BindButton bindName={value.name} key={idx} onClick={() => openPlayModal(value)}></BindButton>
+                                <BindButton bindName={value.name} key={idx} onClick={() => openPlayModal(value)} showDeleteButton={true}></BindButton>
                             ))}
                         </div>
                     </div>
