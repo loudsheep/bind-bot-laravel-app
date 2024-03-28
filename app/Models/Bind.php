@@ -23,7 +23,7 @@ class Bind extends Model
         'active',
     ];
 
-    public function bind_board()
+    public function bindBoard()
     {
         return $this->belongsTo(BindBoard::class);
     }

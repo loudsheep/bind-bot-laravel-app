@@ -9,6 +9,7 @@ import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import BindButton from '@/Components/BindButton';
 import SecondaryButton from '@/Components/SecondaryButton';
+import { router } from '@inertiajs/react';
 
 
 export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayBindUsingBot }) {
@@ -49,6 +50,13 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
             audio.currentTime = 0;
             audio.play();
         }
+    };
+
+    const playOnServer = () => {
+        if (!audio || !bindToPlay) return;
+
+        // console.log(bindToPlay.bind_path);
+        router.post(route('bind.play', bindToPlay.bind_path));
     };
 
     useEffect(() => {
@@ -131,7 +139,7 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
 
                         <div className='w-full flex'>
                             <SecondaryButton className='flex-1 justify-center mr-1' onClick={playAudio}>Play here</SecondaryButton>
-                            <SecondaryButton className={'flex-1 justify-center ml-1 ' + (!canPlayBindUsingBot ? 'cursor-not-allowed' : '')} disabled={!canPlayBindUsingBot}>Play on server</SecondaryButton>
+                            <SecondaryButton className={'flex-1 justify-center ml-1 ' + (!canPlayBindUsingBot ? 'cursor-not-allowed' : '')} disabled={!canPlayBindUsingBot} onClick={playOnServer}>Play on server</SecondaryButton>
                         </div>
                     </div>
                 </div>

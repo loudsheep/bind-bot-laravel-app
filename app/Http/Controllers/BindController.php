@@ -6,6 +6,8 @@ use App\Models\Bind;
 use App\Models\BindBoard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
+
 
 class BindController extends Controller
 {
@@ -38,5 +40,34 @@ class BindController extends Controller
         // TODO authorization
         if (!$bind->active) return abort(404);
         return response()->file(Storage::path('binds/' . $bind->bind_path));
+    }
+
+    public function play(Request $request, Bind $bind)
+    {
+        // TODO authorization
+        if (!$bind->active) return abort(404);
+
+        // dd($bind, $bind->bindBoard->guildId);
+        $apiUrl = env('BOT_BACKEND_URL', 'http://localhost');
+        // dd($apiUrl . '/play');
+        // $response = Http::get($apiUrl . '/play', [
+        //     "url" => Storage::path('binds/' . $bind->bind_path),
+        //     "guildId" => $bind->bindBoard->guildId,
+        //     "channelId" => "",
+        // ]);
+
+        $response = Http::post($apiUrl . '/play', [
+            'body' => json_encode([
+                "url" => Storage::path('binds/' . $bind->bind_path),
+                "guildId" => $bind->bindBoard->guildId,
+                "channelId" => "",
+            ]),
+        ]);
+
+        dd($response);
+
+        // TODO: response status sent to web client
+
+        return back();
     }
 }
