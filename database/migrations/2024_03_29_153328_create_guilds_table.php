@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('guilds', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('bind_board_id');
-            $table->string('guildId');
+            $table->string('guildId')->nullable();
             $table->boolean('verified')->default(false);
             $table->json('voice_channels')->nullable();
             $table->string('selected_voice_channel')->nullable();
