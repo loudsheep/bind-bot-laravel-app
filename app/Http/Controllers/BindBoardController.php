@@ -16,7 +16,7 @@ class BindBoardController extends Controller
             'bindboard' => $bindboard,
             'binds' => $binds,
             'canAddMoreBinds' => $binds->count() < $bindboard->max_allowed_binds,
-            'canPlayBindUsingBot' => $bindboard->guildId !== null && $bindboard->guild_verified,
+            'canPlayBindUsingBot' => $bindboard->guild !== null && $bindboard->guild->verified && $bindboard->guild->selected_voice_channel,
         ]);
     }
 

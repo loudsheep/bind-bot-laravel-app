@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bind;
 use App\Models\BindBoard;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
@@ -45,29 +46,24 @@ class BindController extends Controller
     public function play(Request $request, Bind $bind)
     {
         // TODO authorization
-        if (!$bind->active) return abort(404);
+        if (!$bind->active || $bind->bindBoard->guild == null || $bind->bindBoard->guild->selected_voice_channel == null)
+            return json_encode(['status' => 403, 'message' => 'This action is unauthorized']);
 
-        // dd($bind, $bind->bindBoard->guildId);
         $apiUrl = env('BOT_BACKEND_URL', 'http://localhost');
-        // dd($apiUrl . '/play');
-        // $response = Http::get($apiUrl . '/play', [
-        //     "url" => Storage::path('binds/' . $bind->bind_path),
-        //     "guildId" => $bind->bindBoard->guildId,
-        //     "channelId" => "",
-        // ]);
-
-        $response = Http::post($apiUrl . '/play', [
-            'body' => json_encode([
-                "url" => Storage::path('binds/' . $bind->bind_path),
-                "guildId" => $bind->bindBoard->guildId,
-                "channelId" => "",
-            ]),
-        ]);
-
-        dd($response);
+        try {
+            $response = Http::post($apiUrl . '/play', [
+                'body' => json_encode([
+                    "url" => Storage::path('binds/' . $bind->bind_path),
+                    "guildId" => $bind->bindBoard->guild->guildId,
+                    "channelId" => $bind->bindBoard->guild->selected_voice_channel,
+                ]),
+            ]);
+            return $response->json();
+        } catch (Exception $e) {
+            return json_encode(['status' => 500, 'message' => 'Something went wrong. Try again later']);
+        }
 
         // TODO: response status sent to web client
-
-        return back();
+        return json_encode(['status' => 200, 'message' => 'Successfully played bind on server']);
     }
 }

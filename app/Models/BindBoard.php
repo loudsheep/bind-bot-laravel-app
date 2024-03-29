@@ -17,11 +17,18 @@ class BindBoard extends Model
         'created_by',
     ];
 
-    public function binds() {
+    public function binds()
+    {
         return $this->hasMany(Bind::class);
     }
 
-    public function participants() {
+    public function guild()
+    {
+        return $this->hasOne(Guild::class);
+    }
+
+    public function participants()
+    {
         return $this->hasMany(Participant::class);
     }
 }

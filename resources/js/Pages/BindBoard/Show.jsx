@@ -10,14 +10,24 @@ import { useForm } from '@inertiajs/react';
 import BindButton from '@/Components/BindButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 import { router } from '@inertiajs/react';
+import axios from 'axios';
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayBindUsingBot }) {
     const [showNewBindModal, setShowNewBindModal] = useState(false);
     const [showPlayBindModal, setShowPlayBindModal] = useState(false);
+    const [waitingForBindPlayResponse, setWaitingForBindPlayResponse] = useState(false);
     const [bindToPlay, setBindToPlay] = useState(null);
     const [audio, setAudio] = useState(null);
     const [playing, setPlaying] = useState(false);
+    const notifySuccess = (messsage) => toast.success(messsage, {
+        position: "top-right", autoClose: 4000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", transition: Bounce,
+    });
+    const notifyFailure = (messsage) => toast.error(messsage, {
+        position: "top-right", autoClose: 4000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", transition: Bounce,
+    });
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -39,7 +49,7 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
     const submit = (e) => {
         e.preventDefault();
         post(route('bind.create', bindboard.hash), {
-            onSuccess: () => onClose(),
+            onSuccess: () => onCloseNewBindModal(),
         });
     };
 
@@ -55,8 +65,36 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
     const playOnServer = () => {
         if (!audio || !bindToPlay) return;
 
-        // console.log(bindToPlay.bind_path);
-        router.post(route('bind.play', bindToPlay.bind_path));
+        console.log("PLAYING");
+        setWaitingForBindPlayResponse(true);
+
+        // router.post(route('bind.play', bindToPlay.bind_path), {
+        //     onSuccess: (page) => {
+        //         console.log("SUCCESS", page);
+        //     },
+        // });
+        // const csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
+
+        // fetch(route('bind.play', bindToPlay.bind_path), {
+        //     method: "POST",
+        //     credentials: "same-origin",
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         "X-CSRF-Token": csrfToken
+        //     }
+        // }).then(res => res.json()).then((data) => {
+        //     console.log(data);
+        //     setWaitingForBindPlayResponse(false);
+        // });
+
+        axios.post(route('bind.play', bindToPlay.bind_path)).then(res => {
+            let data = res.data;
+            console.log(data);
+
+            if (data.status == 200) notifySuccess(data.message);
+            else if (data.status == 500) notifyFailure(data.message);
+            else notifyFailure(data.message);
+        });
     };
 
     useEffect(() => {
@@ -78,6 +116,7 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{bindboard.name}</h2>}
         >
+            <ToastContainer />
             <Head title="Dashboard" />
             <Modal show={showNewBindModal} onClose={onCloseNewBindModal} maxWidth='md'>
                 <div className="relative bg-white rounded-lg shadow">
@@ -159,7 +198,7 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
                         )}
                         <div className='mt-10 flex flex-wrap mx-auto'>
                             {binds.map((value, idx) => (
-                                <BindButton bindName={value.name} key={idx} onClick={() => openPlayModal(value)} showDeleteButton={true}></BindButton>
+                                <BindButton title={value.name} bindName={value.name} key={idx} onClickMain={() => openPlayModal(value)} showDeleteButton={true}></BindButton>
                             ))}
                         </div>
                     </div>

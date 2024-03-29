@@ -77,8 +77,8 @@ export default function Dashboard({ auth, authoredBindBoards, canCreateBindboard
                         </div>
                         <div className='flex flex-wrap justify-start'>
                             {authoredBindBoards.map((value, idx) => (
-                                <a href={route('bindboard.show', value.hash)} key={idx} className="block w-64 mx-5 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100">
-                                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{value.name}</h5>
+                                <a href={route('bindboard.show', value.hash)} key={idx} className="block w-64 mx-5 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100" title={value.name}>
+                                    <h5 className="text-2xl font-bold tracking-tight text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis">{value.name}</h5>
                                 </a>
                             ))}
                         </div>
