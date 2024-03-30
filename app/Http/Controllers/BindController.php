@@ -58,6 +58,10 @@ class BindController extends Controller
                     "channelId" => $bind->bindBoard->guild->selected_voice_channel,
                 ]),
             ]);
+
+            $bind->use_count++;
+            $bind->save();
+
             return $response->json();
         } catch (Exception $e) {
             return json_encode(['status' => 500, 'message' => 'Something went wrong. Try again later']);
