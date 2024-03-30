@@ -10,6 +10,8 @@ Route::prefix('/bindboard')->middleware('auth')->group(function () {
     Route::get('/{bindboard:hash}/edit', [BindBoardController::class, 'edit'])->name('bindboard.edit');
     Route::patch('/{bindboard:hash}', [BindBoardController::class, 'update'])->name('bindboard.update');
     Route::delete('/{bindboard:hash}', [BindBoardController::class, 'destroy'])->name('bindboard.destroy');
+
+    // Route::get('/{bindboard:hash}/settins', [BindBoardController::class, 'settings'])->name('bindboard.edit');
 });
 
 Route::prefix('/bind')->middleware('auth')->group(function () {

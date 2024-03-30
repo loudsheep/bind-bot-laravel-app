@@ -18,7 +18,6 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayBindUsingBot }) {
     const [showNewBindModal, setShowNewBindModal] = useState(false);
     const [showPlayBindModal, setShowPlayBindModal] = useState(false);
-    const [waitingForBindPlayResponse, setWaitingForBindPlayResponse] = useState(false);
     const [bindToPlay, setBindToPlay] = useState(null);
     const [audio, setAudio] = useState(null);
     const [playing, setPlaying] = useState(false);
@@ -34,7 +33,10 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
         bind: '',
     });
 
-    const onCloseNewBindModal = () => setShowNewBindModal(false);
+    const onCloseNewBindModal = () => {
+        setShowNewBindModal(false);
+        reset("name", "bind");
+    }
     const onClosePlayBindModal = () => {
         setShowPlayBindModal(false);
         setPlaying(false);
@@ -49,7 +51,9 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
     const submit = (e) => {
         e.preventDefault();
         post(route('bind.create', bindboard.hash), {
-            onSuccess: () => onCloseNewBindModal(),
+            onSuccess: () => {
+                onCloseNewBindModal();
+            },
         });
     };
 
@@ -64,28 +68,6 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
 
     const playOnServer = () => {
         if (!audio || !bindToPlay) return;
-
-        console.log("PLAYING");
-        setWaitingForBindPlayResponse(true);
-
-        // router.post(route('bind.play', bindToPlay.bind_path), {
-        //     onSuccess: (page) => {
-        //         console.log("SUCCESS", page);
-        //     },
-        // });
-        // const csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
-
-        // fetch(route('bind.play', bindToPlay.bind_path), {
-        //     method: "POST",
-        //     credentials: "same-origin",
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         "X-CSRF-Token": csrfToken
-        //     }
-        // }).then(res => res.json()).then((data) => {
-        //     console.log(data);
-        //     setWaitingForBindPlayResponse(false);
-        // });
 
         axios.post(route('bind.play', bindToPlay.bind_path)).then(res => {
             let data = res.data;
@@ -117,7 +99,7 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{bindboard.name}</h2>}
         >
             <ToastContainer />
-            <Head title="Dashboard" />
+            <Head title={"Bindboard - " + bindboard.name} />
             <Modal show={showNewBindModal} onClose={onCloseNewBindModal} maxWidth='md'>
                 <div className="relative bg-white rounded-lg shadow">
                     <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
@@ -143,7 +125,7 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
                                 <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="file_input" type="file" accept=".mp3" required={true} onChange={(e) => setData('bind', e.target.files[0])} />
                                 {errors.bind && (
                                     <p className='text-sm text-red-600 '>
-                                        {message}
+                                        {errors.bind}
                                     </p>
                                 )}
                             </div>
@@ -189,7 +171,16 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                         <div className='w-full flex justify-between'>
                             <h1 className='font-semi-bold text-xl'>Binds of <span className='font-bold'>{bindboard.name}</span> bindboard</h1>
-                            <PrimaryButton className={!canAddMoreBinds ? 'cursor-not-allowed' : ''} onClick={() => setShowNewBindModal(true)} disabled={!canAddMoreBinds}>Add new Bind</PrimaryButton>
+                            <div className='flex'>
+                                <PrimaryButton className={!canAddMoreBinds ? 'cursor-not-allowed' : ''} onClick={() => setShowNewBindModal(true)} disabled={!canAddMoreBinds}>Add new Bind</PrimaryButton>
+                                <a href={route('bindboard.edit', bindboard.hash)} className='mx-2'>
+                                    <button className="h-full rounded-lg bg-gray-200 flex justify-center items-center px-1">
+                                        <span class="material-symbols-outlined text-gray-600">
+                                            settings
+                                        </span>
+                                    </button>
+                                </a>
+                            </div>
                         </div>
                         {bindboard.description && (
                             <div className='w-full flex justify-start'>
@@ -198,7 +189,7 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
                         )}
                         <div className='mt-10 flex flex-wrap mx-auto'>
                             {binds.map((value, idx) => (
-                                <BindButton title={value.name} bindName={value.name} key={idx} onClickMain={() => openPlayModal(value)} showDeleteButton={true}></BindButton>
+                                <BindButton title={value.name} bindName={value.name} key={idx} onClickMain={() => openPlayModal(value)} showDeleteButton={true} active={value.active == 1}></BindButton>
                             ))}
                         </div>
                     </div>

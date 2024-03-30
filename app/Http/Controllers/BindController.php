@@ -16,7 +16,7 @@ class BindController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:50'],
-            'bind' => ['required', 'file', 'mimes:mp3'],
+            'bind' => ['required', 'file', 'mimes:mp3', 'max:500'],
         ]);
 
         if ($bindboard->binds()->count() >= $bindboard->max_allowed_binds) return back()->withErrors(['name' => 'Cannot add new Bind, bind limit depleted']);
