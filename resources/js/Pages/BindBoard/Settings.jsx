@@ -44,7 +44,7 @@ export default function BindBoardSettingsPage({ auth, bindboard, guild }) {
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                         <div className='w-full flex justify-between'>
                             <h1 className='font-semi-bold text-xl'>Settings of <span className='font-bold'>{bindboard.name}</span> bindboard</h1>
-                            {(guild && !guild.verified) && (    
+                            {(!guild || (guild && !guild.verified)) && (
                                 <a href="https://discord.com/oauth2/authorize?client_id=1221410587372818464">
                                     <PrimaryButton>Add our bot to your server</PrimaryButton>
                                 </a>
