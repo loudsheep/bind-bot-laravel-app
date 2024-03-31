@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BindBoard;
+use App\Models\Guild;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -25,7 +26,7 @@ class BindBoardController extends Controller
         // TODO: authorization
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:50'],
-            'description' => ['nullable', 'string', 'min:2', 'max:300'],
+            'description' => ['nullable', 'string', 'min:2', 'max:200'],
         ]);
 
         // TODO max_allowed_binds
@@ -43,12 +44,9 @@ class BindBoardController extends Controller
     {
         $guild = $bindboard->guild;
 
-        // dd($guild);
-
         return Inertia::render('BindBoard/Settings', [
             'bindboard' => $bindboard,
             'guild' => $guild,
-            'canPlayBindUsingBot' => $bindboard->guild !== null && $bindboard->guild->verified && $bindboard->guild->selected_voice_channel,
         ]);
     }
 
@@ -56,7 +54,7 @@ class BindBoardController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:50'],
-            'description' => ['nullable', 'string', 'min:2', 'max:300'],
+            'description' => ['nullable', 'string', 'min:2', 'max:200'],
             'voice_channel' => ['nullable', 'string'],
         ]);
 
@@ -65,8 +63,26 @@ class BindBoardController extends Controller
             $bindboard->guild->selected_voice_channel = $request->voice_channel;
         }
         $bindboard->push();
-        
+
 
         return back();
+    }
+
+    public function bot(Request $request, BindBoard $bindboard)
+    {
+        $guild = $bindboard->guild;
+        if ($guild && $guild->verified) return abort(404);
+
+        if (!$guild) {
+            $guild = $bindboard->guild()->create([
+                'verification_code' => Str::random(10),
+            ]);
+        }
+
+        return Inertia::render('BindBoard/Bot', [
+            'bindboard' => $bindboard,
+            'guild' => $guild,
+            'botUrl' => env('BOT_DISCORD_URL', '#')
+        ]);
     }
 }

@@ -11,7 +11,7 @@ Route::prefix('/bindboard')->middleware('auth')->group(function () {
     Route::patch('/{bindboard:hash}', [BindBoardController::class, 'update'])->name('bindboard.update');
     Route::delete('/{bindboard:hash}', [BindBoardController::class, 'destroy'])->name('bindboard.destroy');
 
-    // Route::get('/{bindboard:hash}/settins', [BindBoardController::class, 'settings'])->name('bindboard.edit');
+    Route::get('/{bindboard:hash}/bot', [BindBoardController::class, 'bot'])->name('bindboard.bot');
 });
 
 Route::prefix('/bind')->middleware('auth')->group(function () {

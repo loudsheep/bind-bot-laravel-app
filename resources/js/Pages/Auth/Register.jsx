@@ -107,14 +107,14 @@ export default function Register() {
                             checked={data.remember}
                             onChange={(e) => setData('remember', e.target.checked)}
                         />
-                        <span className="ms-2 text-sm text-gray-600">Accept <a href="#" className='text-blue-500'>Terms and Conditions</a></span>
+                        <span className="ms-2 text-sm text-icon">Accept <a href="#" className='text-blue-500'>Terms and Conditions</a></span>
                     </label>
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
                     <Link
                         href={route('login')}
-                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="underline text-sm text-icon hover:text-gray-400 rounded-md focus:outline-none focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Already registered?
                     </Link>

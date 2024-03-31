@@ -10,7 +10,7 @@ export default forwardRef(function SelectInput({ type = 'text', className = '', 
     }, []);
 
     return (
-        <select {...props} className={'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm ' + className} ref={input}>
+        <select {...props} className={'border-none bg-background-secondary caret-white text-font-main focus:border-primary focus:ring-indigo-500 rounded-md shadow-sm ' + className} ref={input}>
             {children}
         </select>
     );

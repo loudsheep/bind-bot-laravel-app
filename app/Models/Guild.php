@@ -9,6 +9,10 @@ class Guild extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'verification_code',
+    ];
+
     public function bindBoard()
     {
         return $this->belongsTo(BindBoard::class);

@@ -34,18 +34,18 @@ export default function BindBoardSettingsPage({ auth, bindboard, guild }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{bindboard.name}</h2>}
+            header={<h2 className="font-semibold text-xl leading-tight">{bindboard.name}</h2>}
         >
             <ToastContainer />
             <Head title={"Settings - " + bindboard.name} />
 
-            <div className="py-12">
+            <div className="py-12 text-font-main">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6">
                         <div className='w-full flex justify-between'>
                             <h1 className='font-semi-bold text-xl'>Settings of <span className='font-bold'>{bindboard.name}</span> bindboard</h1>
                             {(!guild || (guild && !guild.verified)) && (
-                                <a href="https://discord.com/oauth2/authorize?client_id=1221410587372818464">
+                                <a href={route('bindboard.bot', bindboard.hash)}>
                                     <PrimaryButton>Add our bot to your server</PrimaryButton>
                                 </a>
                             )}

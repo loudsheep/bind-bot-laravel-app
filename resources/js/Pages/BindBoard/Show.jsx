@@ -96,14 +96,14 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{bindboard.name}</h2>}
+            header={<h2 className="font-semibold text-xl leading-tight">{bindboard.name}</h2>}
         >
             <ToastContainer />
             <Head title={"Bindboard - " + bindboard.name} />
             <Modal show={showNewBindModal} onClose={onCloseNewBindModal} maxWidth='md'>
-                <div className="relative bg-white rounded-lg shadow">
-                    <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                        <h3 className="text-xl font-semibold text-gray-900">
+                <div className="relative bg-background border border-background-secondary rounded-lg shadow">
+                    <div className="flex items-center justify-between p-4 md:p-5 border-b border-background-secondary rounded-t">
+                        <h3 className="text-xl font-semibold text-font-main">
                             Upload your new Bind
                         </h3>
                         <button type="button" className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="authentication-modal" onClick={onCloseNewBindModal}>
@@ -121,8 +121,9 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
                                 <InputError message={errors.name} className="mt-2" />
                             </div>
                             <div>
-                                <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="file_input">Upload MP3 file:</label>
-                                <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="file_input" type="file" accept=".mp3" required={true} onChange={(e) => setData('bind', e.target.files[0])} />
+                                {/* <label className="block mb-2 text-sm font-medium text-gray-900" htmlFor="file_input">Upload MP3 file:</label> */}
+                                <InputLabel htmlFor="file_input" value="Upload MP3 file:" />
+                                <input className="block w-full text-sm text-font-main cursor-pointer focus:outline-none" id="file_input" type="file" accept=".mp3" required={true} onChange={(e) => setData('bind', e.target.files[0])} />
                                 {errors.bind && (
                                     <p className='text-sm text-red-600 '>
                                         {errors.bind}
@@ -136,9 +137,9 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
             </Modal>
 
             <Modal show={showPlayBindModal && bindToPlay !== null} onClose={onClosePlayBindModal} maxWidth='md' >
-                <div className="relative bg-white rounded-lg shadow">
-                    <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                        <h3 className="text-xl font-bold text-gray-900">
+                <div className="relative bg-background border border-background-secondary rounded-lg shadow">
+                    <div className="flex items-center justify-between p-4 md:p-5 border-b border-background-secondary rounded-t">
+                        <h3 className="text-xl font-bold text-font-main">
                             {bindToPlay?.name}
                         </h3>
                         <button type="button" className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="authentication-modal" onClick={onClosePlayBindModal}>
@@ -166,16 +167,16 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
                 </div>
             </Modal>
 
-            <div className="py-12">
+            <div className="py-12 text-font-main">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6">
                         <div className='w-full flex justify-between'>
                             <h1 className='font-semi-bold text-xl'>Binds of <span className='font-bold'>{bindboard.name}</span> bindboard</h1>
                             <div className='flex'>
                                 <PrimaryButton className={!canAddMoreBinds ? 'cursor-not-allowed' : ''} onClick={() => setShowNewBindModal(true)} disabled={!canAddMoreBinds}>Add new Bind</PrimaryButton>
                                 <a href={route('bindboard.edit', bindboard.hash)} className='mx-2'>
-                                    <button className="h-full rounded-lg bg-gray-200 flex justify-center items-center px-1">
-                                        <span class="material-symbols-outlined text-gray-600">
+                                    <button className="h-full rounded-lg bg-background-secondary flex justify-center items-center px-1">
+                                        <span class="material-symbols-outlined text-icon">
                                             settings
                                         </span>
                                     </button>
