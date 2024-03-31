@@ -21,7 +21,10 @@ class BindBoardPolicy
      */
     public function view(User $user, BindBoard $bindBoard): bool
     {
-        return true;
+        if ($bindBoard->created_by == $user->id) return true;
+        $participant = $bindBoard->participants()->where('user_id', $user->id)->first();
+        if (!$participant) return false;
+        return $participant->permissions & config('constants.permissions.VIEW') > 0;
     }
 
     /**
@@ -29,7 +32,7 @@ class BindBoardPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->createdBindBoards->count() < $user->max_bind_boards;
     }
 
     /**
@@ -37,7 +40,10 @@ class BindBoardPolicy
      */
     public function update(User $user, BindBoard $bindBoard): bool
     {
-        return true;
+        if ($bindBoard->created_by == $user->id) return true;
+        $participant = $bindBoard->participants()->where('user_id', $user->id)->first();
+        if (!$participant) return false;
+        return $participant->permissions & config('constants.permissions.ADMIN') > 0;
     }
 
     /**
@@ -45,7 +51,7 @@ class BindBoardPolicy
      */
     public function delete(User $user, BindBoard $bindBoard): bool
     {
-        return true;
+        return $bindBoard->created_by == $user->id;
     }
 
     /**
@@ -53,7 +59,7 @@ class BindBoardPolicy
      */
     public function restore(User $user, BindBoard $bindBoard): bool
     {
-        return true;
+        return $bindBoard->created_by == $user->id;
     }
 
     /**
@@ -61,6 +67,6 @@ class BindBoardPolicy
      */
     public function forceDelete(User $user, BindBoard $bindBoard): bool
     {
-        return true;
+        return $bindBoard->created_by == $user->id;
     }
 }

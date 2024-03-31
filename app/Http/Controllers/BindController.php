@@ -14,6 +14,8 @@ class BindController extends Controller
 {
     public function create(Request $request, BindBoard $bindboard)
     {
+        $this->authorize('create', Bind::class);
+
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:50'],
             'bind' => ['required', 'file', 'mimes:mp3', 'max:500'],
@@ -38,6 +40,7 @@ class BindController extends Controller
 
     public function file(Request $request, Bind $bind)
     {
+        $this->authorize('view', $bind);
         // TODO authorization
         if (!$bind->active) return abort(404);
         return response()->file(Storage::path('binds/' . $bind->bind_path));
@@ -45,6 +48,7 @@ class BindController extends Controller
 
     public function play(Request $request, Bind $bind)
     {
+        $this->authorize('play', $bind);
         // TODO authorization
         if (!$bind->active || $bind->bindBoard->guild == null || $bind->bindBoard->guild->selected_voice_channel == null)
             return json_encode(['status' => 403, 'message' => 'This action is unauthorized']);

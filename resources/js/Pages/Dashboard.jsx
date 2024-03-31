@@ -3,18 +3,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import Modal from '@/Components/Modal';
-// import PrimaryButton from '@/Components/PrimaryButton';
-// import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-// import { Head } from '@inertiajs/react';
-// import { useState, useEffect } from 'react';/
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
-import BindButton from '@/Components/BindButton';
-import SecondaryButton from '@/Components/SecondaryButton';
 
-export default function Dashboard({ auth, authoredBindBoards, canCreateBindboards }) {
+export default function Dashboard({ auth, authoredBindBoards, sharedBindBoards, canCreateBindboards }) {
     const [showNewBindBoardModal, setShowNewBindBoardModal] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -62,7 +56,6 @@ export default function Dashboard({ auth, authoredBindBoards, canCreateBindboard
                                 <TextInput id="description" type="text" name="description" value={data.description} className="mt-1 block w-full" autoComplete="username" onChange={(e) => setData('description', e.target.value)} />
                                 <InputError message={errors.description} className="mt-2" />
                             </div>
-                            {/* <button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Create your awesome board</button> */}
                             <PrimaryButton className='w-full text-center'>
                                 Create your awesome board
                             </PrimaryButton>
@@ -80,10 +73,31 @@ export default function Dashboard({ auth, authoredBindBoards, canCreateBindboard
                         </div>
                         <div className='flex flex-wrap justify-start'>
                             {authoredBindBoards.map((value, idx) => (
-                                <a href={route('bindboard.show', value.hash)} key={idx} className="block w-64 mx-5 p-6 bg-background border border-background-secondary text-font-main rounded-lg shadow hover:bg-background-secondary" title={value.name}>
+                                <a href={route('bindboard.show', value.hash)} key={idx} className="block w-64 mx-5 p-6 bg-background border border-background-secondary text-font-main rounded-lg shadow hover:bg-background-secondary mb-5" title={value.name}>
                                     <h5 className="text-2xl font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis">{value.name}</h5>
                                 </a>
                             ))}
+                            {authoredBindBoards.length == 0 && (
+                                <p className='text-icon'>Nothing to show</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-20">
+                    <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <div className='flex justify-between mb-10 text-font-main'>
+                            <h1 className='font-bold text-xl'>BindBoards shared with You:</h1>
+                        </div>
+                        <div className='flex flex-wrap justify-start'>
+                            {sharedBindBoards.map((value, idx) => (
+                                <a href={route('bindboard.show', value.hash)} key={idx} className="block w-64 mx-5 p-6 bg-background border border-background-secondary text-font-main rounded-lg shadow hover:bg-background-secondary mb-5" title={value.name}>
+                                    <h5 className="text-2xl font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis">{value.name}</h5>
+                                </a>
+                            ))}
+                            {sharedBindBoards.length == 0 && (
+                                <p className='text-icon'>Nothing to show</p>
+                            )}
                         </div>
                     </div>
                 </div>

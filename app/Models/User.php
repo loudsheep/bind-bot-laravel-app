@@ -43,7 +43,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function createdBindBoards() {
+    public function createdBindBoards()
+    {
         return $this->hasMany(BindBoard::class, 'created_by');
+    }
+
+    public function sharedBindBoards()
+    {
+        return $this->hasManyThrough(BindBoard::class, Participant::class, 'user_id', 'id', 'id', 'bind_board_id');
     }
 }

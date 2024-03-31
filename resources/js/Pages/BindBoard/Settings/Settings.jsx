@@ -11,25 +11,23 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function BindBoardSettingsPage({ auth, bindboard, guild }) {
-    const { data, setData, errors, patch, reset, processing, recentlySuccessful } = useForm({
+    const { data, setData, errors, patch, reset, processing } = useForm({
         name: bindboard.name,
         description: bindboard.description,
         voice_channel: guild ? guild.selected_voice_channel : null,
     });
 
-    const notifySuccess = (messsage) => toast.success(messsage, {
-        position: "top-right", autoClose: 4000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", transition: Bounce,
+    const notifySuccess = (message) => toast.success(message, {
+        position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark", transition: Bounce,
     });
 
     const onSubmit = (e) => {
         e.preventDefault();
 
-        patch(route('bindboard.update', bindboard.hash));
+        patch(route('bindboard.update', bindboard.hash), {
+            onSuccess: () => notifySuccess("Settings updated!"),
+        });
     };
-
-    if (recentlySuccessful) {
-        notifySuccess();
-    }
 
     return (
         <AuthenticatedLayout
@@ -43,7 +41,7 @@ export default function BindBoardSettingsPage({ auth, bindboard, guild }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6">
                         <div className='w-full flex justify-between'>
-                            <h1 className='font-semi-bold text-xl'>Settings of <span className='font-bold'>{bindboard.name}</span> bindboard</h1>
+                            <h1 className='text-xl text-icon'>General settings of <span className='font-bold text-font-main'>{bindboard.name}</span> bindboard</h1>
                             {(!guild || (guild && !guild.verified)) && (
                                 <a href={route('bindboard.bot', bindboard.hash)}>
                                     <PrimaryButton>Add our bot to your server</PrimaryButton>
@@ -51,7 +49,7 @@ export default function BindBoardSettingsPage({ auth, bindboard, guild }) {
                             )}
                         </div>
                         {bindboard.description && (
-                            <div className='w-full flex justify-start'>
+                            <div className='w-full flex justify-start text-icon text-sm'>
                                 <h3>{bindboard.description}</h3>
                             </div>
                         )}
@@ -111,6 +109,27 @@ export default function BindBoardSettingsPage({ auth, bindboard, guild }) {
                                     <PrimaryButton className='' type="submit">Save</PrimaryButton>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+
+                    <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6 mt-10">
+                        <div className='w-full flex justify-between'>
+                            <h1 className='font-semi-bold text-xl'>Invitations</h1>
+                            <a href={route('bindboard.bot', bindboard.hash)}>
+                                <PrimaryButton>Invite</PrimaryButton>
+                            </a>
+                        </div>
+                        <div className='w-full flex justify-start text-icon text-sm'>
+                            <h3>Active invitations</h3>
+                        </div>
+                    </div>
+
+                    <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6 mt-10">
+                        <div className='w-full flex justify-between'>
+                            <h1 className='font-semi-bold text-xl'>User menagement</h1>
+                        </div>
+                        <div className='w-full flex justify-start text-icon text-sm'>
+                            <h3>Users and their permissions</h3>
                         </div>
                     </div>
                 </div>

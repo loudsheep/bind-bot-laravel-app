@@ -4,18 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\BindBoard;
 use App\Models\Guild;
+use App\Services\PermissionService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
 class BindBoardController extends Controller
 {
+    protected $permissionService;
+    public function __construct(PermissionService $permissionService)
+    {
+        $this->permissionService = $permissionService;
+    }
+
     public function show(Request $request, BindBoard $bindboard)
     {
+        $this->authorize('view', $bindboard);
+        
         $binds = $bindboard->binds()->get();
+        $permissions = $this->permissionService->getUserPermissionsForBindboard($request->user(), $bindboard);
         return Inertia::render('BindBoard/Show', [
             'bindboard' => $bindboard,
             'binds' => $binds,
+            'permissions' => $permissions,
             'canAddMoreBinds' => $binds->count() < $bindboard->max_allowed_binds,
             'canPlayBindUsingBot' => $bindboard->guild !== null && $bindboard->guild->verified && $bindboard->guild->selected_voice_channel,
         ]);
@@ -23,6 +34,7 @@ class BindBoardController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', BindBoard::class);
         // TODO: authorization
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:50'],
@@ -42,9 +54,11 @@ class BindBoardController extends Controller
 
     public function edit(Request $request, BindBoard $bindboard)
     {
+        $this->authorize('update', $bindboard);
+
         $guild = $bindboard->guild;
 
-        return Inertia::render('BindBoard/Settings', [
+        return Inertia::render('BindBoard/Settings/Settings', [
             'bindboard' => $bindboard,
             'guild' => $guild,
         ]);
@@ -52,6 +66,8 @@ class BindBoardController extends Controller
 
     public function update(Request $request, BindBoard $bindboard)
     {
+        $this->authorize('update', $bindboard);
+
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:50'],
             'description' => ['nullable', 'string', 'min:2', 'max:200'],
@@ -70,6 +86,8 @@ class BindBoardController extends Controller
 
     public function bot(Request $request, BindBoard $bindboard)
     {
+        $this->authorize('update', $bindboard);
+
         $guild = $bindboard->guild;
         if ($guild && $guild->verified) return abort(404);
 

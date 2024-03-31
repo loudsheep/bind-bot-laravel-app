@@ -73,7 +73,7 @@ export default function BindBoardBotPage({ auth, bindboard, guild, botUrl }) {
                         </div>
 
                         <div className='w-full mt-5 py-4'>
-                            <h1 className='font-semi-bold text-icon text-sm text-center'>After successful verification you'll be able to use your Bind on voice channels in no time.</h1>
+                            <h1 className='font-semi-bold text-icon text-sm text-center'>After successful verification you'll be able to use your Binds on voice channels.</h1>
                         </div>
 
                         <a href={route('bindboard.show', bindboard.hash)}>

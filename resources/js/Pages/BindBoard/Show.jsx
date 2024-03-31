@@ -9,23 +9,22 @@ import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import BindButton from '@/Components/BindButton';
 import SecondaryButton from '@/Components/SecondaryButton';
-import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayBindUsingBot }) {
+export default function Show({ auth, bindboard, binds, permissions, canAddMoreBinds, canPlayBindUsingBot }) {
     const [showNewBindModal, setShowNewBindModal] = useState(false);
     const [showPlayBindModal, setShowPlayBindModal] = useState(false);
     const [bindToPlay, setBindToPlay] = useState(null);
     const [audio, setAudio] = useState(null);
     const [playing, setPlaying] = useState(false);
     const notifySuccess = (messsage) => toast.success(messsage, {
-        position: "top-right", autoClose: 4000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", transition: Bounce,
+        position: "top-right", autoClose: 4000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark", transition: Bounce,
     });
     const notifyFailure = (messsage) => toast.error(messsage, {
-        position: "top-right", autoClose: 4000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light", transition: Bounce,
+        position: "top-right", autoClose: 4000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark", transition: Bounce,
     });
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -161,7 +160,7 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
 
                         <div className='w-full flex'>
                             <SecondaryButton className='flex-1 justify-center mr-1' onClick={playAudio}>Play here</SecondaryButton>
-                            <SecondaryButton className={'flex-1 justify-center ml-1 ' + (!canPlayBindUsingBot ? 'cursor-not-allowed' : '')} disabled={!canPlayBindUsingBot} onClick={playOnServer}>Play on server</SecondaryButton>
+                            <SecondaryButton className={'flex-1 justify-center ml-1 ' + (permissions.PLAY_BIND_ON_SERVER && canPlayBindUsingBot ? '' : 'cursor-not-allowed')} disabled={!(permissions.PLAY_BIND_ON_SERVER && canPlayBindUsingBot)} onClick={playOnServer}>Play on server</SecondaryButton>
                         </div>
                     </div>
                 </div>
@@ -173,14 +172,18 @@ export default function Show({ auth, bindboard, binds, canAddMoreBinds, canPlayB
                         <div className='w-full flex justify-between'>
                             <h1 className='font-semi-bold text-xl'>Binds of <span className='font-bold'>{bindboard.name}</span> bindboard</h1>
                             <div className='flex'>
-                                <PrimaryButton className={!canAddMoreBinds ? 'cursor-not-allowed' : ''} onClick={() => setShowNewBindModal(true)} disabled={!canAddMoreBinds}>Add new Bind</PrimaryButton>
-                                <a href={route('bindboard.edit', bindboard.hash)} className='mx-2'>
-                                    <button className="h-full rounded-lg bg-background-secondary flex justify-center items-center px-1">
-                                        <span class="material-symbols-outlined text-icon">
-                                            settings
-                                        </span>
-                                    </button>
-                                </a>
+                                {permissions.CREATE_BIND && (
+                                    <PrimaryButton className={permissions.CREATE_BIND && canAddMoreBinds ? 'cursor-not-allowed' : ''} onClick={() => setShowNewBindModal(true)} disabled={!(permissions.CREATE_BIND && canAddMoreBinds)}>Add new Bind</PrimaryButton>
+                                )}
+                                {permissions.ADMIN && (
+                                    <a href={route('bindboard.edit', bindboard.hash)} className='mx-2'>
+                                        <button className="h-full rounded-lg bg-background-secondary flex justify-center items-center px-1">
+                                            <span class="material-symbols-outlined text-icon">
+                                                settings
+                                            </span>
+                                        </button>
+                                    </a>
+                                )}
                             </div>
                         </div>
                         {bindboard.description && (

@@ -21,7 +21,10 @@ class BindPolicy
      */
     public function view(User $user, Bind $bind): bool
     {
-        return true;
+        if ($bind->bindBoard->created_by == $user->id) return true;
+        $participant = $bind->bindBoard->participants()->where('user_id', $user->id)->first();
+        if (!$participant) return false;
+        return $participant->permissions & config('constants.permissions.VIEW') > 0;
     }
 
     /**
@@ -37,7 +40,10 @@ class BindPolicy
      */
     public function update(User $user, Bind $bind): bool
     {
-        return true;
+        if ($bind->bindBoard->created_by == $user->id) return true;
+        $participant = $bind->bindBoard->participants()->where('user_id', $user->id)->first();
+        if (!$participant) return false;
+        return $participant->permissions & config('constants.permissions.EDIT_BIND') > 0;
     }
 
     /**
@@ -45,7 +51,10 @@ class BindPolicy
      */
     public function delete(User $user, Bind $bind): bool
     {
-        return true;
+        if ($bind->bindBoard->created_by == $user->id) return true;
+        $participant = $bind->bindBoard->participants()->where('user_id', $user->id)->first();
+        if (!$participant) return false;
+        return $participant->permissions & config('constants.permissions.DELETE_BIND') > 0;
     }
 
     /**
@@ -61,6 +70,20 @@ class BindPolicy
      */
     public function forceDelete(User $user, Bind $bind): bool
     {
-        return true;
+        if ($bind->bindBoard->created_by == $user->id) return true;
+        $participant = $bind->bindBoard->participants()->where('user_id', $user->id)->first();
+        if (!$participant) return false;
+        return $participant->permissions & config('constants.permissions.DELETE_BIND') > 0;
+    }
+
+    /**
+     * Determine whether the user can pplay bind on server using bot.
+     */
+    public function play(User $user, Bind $bind): bool
+    {
+        if ($bind->bindBoard->created_by == $user->id) return true;
+        $participant = $bind->bindBoard->participants()->where('user_id', $user->id)->first();
+        if (!$participant) return false;
+        return $participant->permissions & config('constants.permissions.PLAY_BIND_ON_SERVER') > 0;
     }
 }
