@@ -73,7 +73,7 @@ class BindPolicy
         if ($bind->bindBoard->created_by == $user->id) return true;
         $participant = $bind->bindBoard->participants()->where('user_id', $user->id)->first();
         if (!$participant) return false;
-        return $participant->permissions & config('constants.permissions.DELETE_BIND') > 0;
+        return ($participant->permissions & config('constants.permissions.DELETE_BIND')) > 0;
     }
 
     /**
@@ -84,6 +84,6 @@ class BindPolicy
         if ($bind->bindBoard->created_by == $user->id) return true;
         $participant = $bind->bindBoard->participants()->where('user_id', $user->id)->first();
         if (!$participant) return false;
-        return $participant->permissions & config('constants.permissions.PLAY_BIND_ON_SERVER') > 0;
+        return ($participant->permissions & config('constants.permissions.PLAY_BIND_ON_SERVER')) > 0;
     }
 }

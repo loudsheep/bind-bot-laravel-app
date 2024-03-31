@@ -1,38 +1,20 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
 import { Head } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { useForm } from '@inertiajs/react';
-import SelectInput from '@/Components/SelectInput';
-import { ToastContainer, toast, Bounce } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import GeneralSettings from './Partials/General';
+import Invites from './Partials/Invites';
+import UsersPartial from './Partials/Users';
 
 
 export default function BindBoardSettingsPage({ auth, bindboard, guild }) {
-    const { data, setData, errors, patch, reset, processing } = useForm({
-        name: bindboard.name,
-        description: bindboard.description,
-        voice_channel: guild ? guild.selected_voice_channel : null,
-    });
 
-    const notifySuccess = (message) => toast.success(message, {
-        position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark", transition: Bounce,
-    });
-
-    const onSubmit = (e) => {
-        e.preventDefault();
-
-        patch(route('bindboard.update', bindboard.hash), {
-            onSuccess: () => notifySuccess("Settings updated!"),
-        });
-    };
 
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl leading-tight">{bindboard.name}</h2>}
+            header={<h2 className="font-semibold text-xl leading-tight"><a href={route('bindboard.show', bindboard.hash)}>{bindboard.name}</a></h2>}
         >
             <ToastContainer />
             <Head title={"Settings - " + bindboard.name} />
@@ -54,83 +36,15 @@ export default function BindBoardSettingsPage({ auth, bindboard, guild }) {
                             </div>
                         )}
 
-                        <div className='w-full mt-10 flex flex-wrap mx-auto'>
-                            <form onSubmit={onSubmit} className='w-full'>
-                                <div className='w-full flex flex-wrap'>
-                                    <div className='flex-1 min-w-48 mx-1 mb-2'>
-                                        <InputLabel htmlFor="name" value="Bindboard name:" />
-
-                                        <TextInput
-                                            id="name"
-                                            value={data.name}
-                                            onChange={(e) => setData('name', e.target.value)}
-                                            type="text"
-                                            className="mt-1 block w-full"
-                                            autoComplete="guild-name"
-                                        />
-
-                                        <InputError message={errors.name} className="mt-2" />
-                                    </div>
-
-                                    <div className='flex-1 min-w-48 mx-1 mb-2'>
-                                        <InputLabel htmlFor="name" value="Voice channel to play binds:" />
-
-                                        <SelectInput id="voice_channel" onChange={(e) => setData('voice_channel', e.target.value)} className="mt-1 block w-full" value={data.voice_channel} disabled={!guild?.voice_channels}>
-                                            <option value="" disabled selected={true}>Select voice channel</option>
-
-                                            {guild?.voice_channels && (
-                                                <>
-                                                    {JSON.parse(guild.voice_channels).map((value, idx) => (
-                                                        <option value={value.channelId} key={idx}>{value.name}</option>
-                                                    ))}
-                                                </>
-                                            )}
-                                        </SelectInput>
-
-                                        <InputError message={errors.name} className="mt-2" />
-                                    </div>
-                                </div>
-                                <div className='flex-1 min-w-48 mx-1 mb-2'>
-                                    <InputLabel htmlFor="description" value="Bindboard description:" />
-
-                                    <TextInput
-                                        id="description"
-                                        value={data.description}
-                                        onChange={(e) => setData('description', e.target.value)}
-                                        type="text"
-                                        className="mt-1 block w-full"
-                                        autoComplete="guild-description"
-                                    />
-
-                                    <InputError message={errors.description} className="mt-2" />
-                                </div>
-
-                                <div className='w-full flex flex-wrap mx-1'>
-                                    <PrimaryButton className='' type="submit">Save</PrimaryButton>
-                                </div>
-                            </form>
-                        </div>
+                        <GeneralSettings bindboard={bindboard} guild={guild}></GeneralSettings>
                     </div>
 
                     <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6 mt-10">
-                        <div className='w-full flex justify-between'>
-                            <h1 className='font-semi-bold text-xl'>Invitations</h1>
-                            <a href={route('bindboard.bot', bindboard.hash)}>
-                                <PrimaryButton>Invite</PrimaryButton>
-                            </a>
-                        </div>
-                        <div className='w-full flex justify-start text-icon text-sm'>
-                            <h3>Active invitations</h3>
-                        </div>
+                        <Invites bindboard={bindboard}></Invites>
                     </div>
 
                     <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6 mt-10">
-                        <div className='w-full flex justify-between'>
-                            <h1 className='font-semi-bold text-xl'>User menagement</h1>
-                        </div>
-                        <div className='w-full flex justify-start text-icon text-sm'>
-                            <h3>Users and their permissions</h3>
-                        </div>
+                        <UsersPartial></UsersPartial>
                     </div>
                 </div>
             </div>

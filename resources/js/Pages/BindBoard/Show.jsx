@@ -173,11 +173,11 @@ export default function Show({ auth, bindboard, binds, permissions, canAddMoreBi
                             <h1 className='font-semi-bold text-xl'>Binds of <span className='font-bold'>{bindboard.name}</span> bindboard</h1>
                             <div className='flex'>
                                 {permissions.CREATE_BIND && (
-                                    <PrimaryButton className={permissions.CREATE_BIND && canAddMoreBinds ? 'cursor-not-allowed' : ''} onClick={() => setShowNewBindModal(true)} disabled={!(permissions.CREATE_BIND && canAddMoreBinds)}>Add new Bind</PrimaryButton>
+                                    <PrimaryButton className={permissions.CREATE_BIND && canAddMoreBinds ? '' : 'cursor-not-allowed'} onClick={() => setShowNewBindModal(true)} disabled={!(permissions.CREATE_BIND > 0 && canAddMoreBinds)}>Add new Bind</PrimaryButton>
                                 )}
                                 {permissions.ADMIN && (
                                     <a href={route('bindboard.edit', bindboard.hash)} className='mx-2'>
-                                        <button className="h-full rounded-lg bg-background-secondary flex justify-center items-center px-1">
+                                        <button className="h-full rounded-lg hover:bg-background-secondary flex justify-center items-center px-1">
                                             <span class="material-symbols-outlined text-icon">
                                                 settings
                                             </span>

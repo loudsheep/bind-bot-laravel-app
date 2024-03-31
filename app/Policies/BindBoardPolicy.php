@@ -24,7 +24,7 @@ class BindBoardPolicy
         if ($bindBoard->created_by == $user->id) return true;
         $participant = $bindBoard->participants()->where('user_id', $user->id)->first();
         if (!$participant) return false;
-        return $participant->permissions & config('constants.permissions.VIEW') > 0;
+        return ($participant->permissions & config('constants.permissions.VIEW')) > 0;
     }
 
     /**
@@ -43,7 +43,7 @@ class BindBoardPolicy
         if ($bindBoard->created_by == $user->id) return true;
         $participant = $bindBoard->participants()->where('user_id', $user->id)->first();
         if (!$participant) return false;
-        return $participant->permissions & config('constants.permissions.ADMIN') > 0;
+        return ($participant->permissions & config('constants.permissions.ADMIN')) > 0;
     }
 
     /**
