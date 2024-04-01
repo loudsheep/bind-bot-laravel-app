@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BindBoard;
 use App\Models\Guild;
 use App\Services\PermissionService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -20,7 +21,7 @@ class BindBoardController extends Controller
     public function show(Request $request, BindBoard $bindboard)
     {
         $this->authorize('view', $bindboard);
-        
+
         $binds = $bindboard->binds()->get();
         $permissions = $this->permissionService->getUserPermissionsForBindboard($request->user(), $bindboard);
         return Inertia::render('BindBoard/Show', [
@@ -57,10 +58,12 @@ class BindBoardController extends Controller
         $this->authorize('update', $bindboard);
 
         $guild = $bindboard->guild;
+        $invites = $bindboard->invites()->where('active', 1)->where('active_until', '>=', Carbon::today())->get()->toArray();
 
         return Inertia::render('BindBoard/Settings/Settings', [
             'bindboard' => $bindboard,
             'guild' => $guild,
+            'invites' => $invites,
         ]);
     }
 

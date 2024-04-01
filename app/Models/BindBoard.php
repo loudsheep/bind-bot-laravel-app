@@ -17,6 +17,18 @@ class BindBoard extends Model
         'created_by',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'id',
+        'created_by',
+        'password',
+        'remember_token',
+    ];
+
     public function binds()
     {
         return $this->hasMany(Bind::class);
@@ -30,5 +42,9 @@ class BindBoard extends Model
     public function participants()
     {
         return $this->hasMany(Participant::class);
+    }
+
+    public function invites() {
+        return $this->hasMany(Invite::class);
     }
 }
