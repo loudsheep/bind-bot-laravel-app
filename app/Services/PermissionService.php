@@ -19,8 +19,8 @@ class PermissionService
 
         $result = [];
         foreach ($permissions as $key => $value) {
-            if ($userPermissions & $value > 0) {
-                array_push($result, $key);
+            if (($userPermissions & $value) > 0) {
+                $result[$key] = $value;
             }
         }
         return $result;

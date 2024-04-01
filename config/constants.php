@@ -10,6 +10,6 @@ return [
         // 'CREATE_INVITES' => 32,
         // 'DELETE_INVITES' => 64,
         // 'REMOVE_PARTICIPANTS' => 128,
-        'ADMIN' => 256,
+        'ADMIN' => 255 + 256,
     ],
 ];
