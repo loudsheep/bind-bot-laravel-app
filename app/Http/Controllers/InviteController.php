@@ -71,7 +71,7 @@ class InviteController extends Controller
         }
         if(Gate::allows('view', $invite->bindboard)) return abort(404);
 
-        $invite->update(['users_used' => $invite->users_used + 1]);
+        $invite->increment('users_used');
         $invite->bindboard->participants()->create([
             'user_id' => $request->user()->id,
             'permissions' => config('constants.permissions.VIEW', 1),
