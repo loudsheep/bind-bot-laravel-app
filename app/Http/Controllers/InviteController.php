@@ -20,9 +20,7 @@ class InviteController extends Controller
             return abort(404);
         }
 
-        if(Gate::allows('view', $invite->bindboard)) return abort(404);
-
-        // dd($invite->bindboard);
+        if (Gate::allows('view', $invite->bindboard)) return abort(404);
 
         return Inertia::render('Invite', [
             'invite' => $invite,
@@ -55,7 +53,6 @@ class InviteController extends Controller
 
     public function destroy(Request $request, Invite $invite)
     {
-        // dd($invite->bindboard);
         $this->authorize('update', $invite->bindboard);
 
         $invite->update(['active' => false]);
@@ -69,9 +66,13 @@ class InviteController extends Controller
             $invite->update(['active' => false]);
             return abort(404);
         }
-        if(Gate::allows('view', $invite->bindboard)) return abort(404);
+        if (Gate::allows('view', $invite->bindboard)) return abort(404);
 
         $invite->increment('users_used');
+        if ($invite->max_users && $invite->users_used >= $invite->max_users) {
+            $invite->update(['active' => false]);
+        }
+        
         $invite->bindboard->participants()->create([
             'user_id' => $request->user()->id,
             'permissions' => config('constants.permissions.VIEW', 1),

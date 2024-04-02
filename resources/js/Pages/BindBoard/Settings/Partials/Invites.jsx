@@ -113,27 +113,9 @@ export default function Invites({ bindboard, invites }) {
                                 </td>
                                 <td className="px-6 py-4">
                                     <button onClick={() => handleDelete(value.hash)} className="font-medium text-red-600 dark:text-red-500 hover:underline">Delete</button>
-                                    {/* <a href={route('invite.destroy', value.hash)} className="font-medium text-red-600 dark:text-red-500 hover:underline">Delete</a> */}
                                 </td>
                             </tr>
                         ))}
-                        {/* <tr className="odd:bg-background even:bg-gray-800 border-t border-background-secondary">
-                            <th scope="row" className="px-6 py-4 font-medium text-icon whitespace-nowrap">
-                                Apple MacBook Pro 17"
-                            </th>
-                            <td className="px-6 py-4">
-                                Silver
-                            </td>
-                            <td className="px-6 py-4">
-                                Laptop
-                            </td>
-                            <td className="px-6 py-4">
-                                $2999
-                            </td>
-                            <td className="px-6 py-4">
-                                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            </td>
-                        </tr> */}
                     </tbody>
                 </table>
             </div>

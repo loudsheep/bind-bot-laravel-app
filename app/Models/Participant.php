@@ -15,8 +15,19 @@ class Participant extends Model
         'permissions',
     ];
 
-    public function bindBoard() {
-        return $this->belongsTo(BindBoard::class);
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'user_id',
+        'updated_at',
+        'bind_board_id',
+    ];
+
+    public function bindboard() {
+        return $this->belongsTo(BindBoard::class, 'bind_board_id');
     }
 
     public function user() {

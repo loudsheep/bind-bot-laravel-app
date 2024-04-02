@@ -36,7 +36,6 @@ class BindBoardController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', BindBoard::class);
-        // TODO: authorization
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:50'],
             'description' => ['nullable', 'string', 'min:2', 'max:200'],
@@ -59,11 +58,13 @@ class BindBoardController extends Controller
 
         $guild = $bindboard->guild;
         $invites = $bindboard->invites()->where('active', 1)->where('active_until', '>=', Carbon::today())->get()->toArray();
+        $participants = $bindboard->participants()->with('user')->get();
 
         return Inertia::render('BindBoard/Settings/Settings', [
             'bindboard' => $bindboard,
             'guild' => $guild,
             'invites' => $invites,
+            'participants' => $participants,
         ]);
     }
 

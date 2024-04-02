@@ -3,6 +3,7 @@
 use App\Http\Controllers\BindBoardController;
 use App\Http\Controllers\BindController;
 use App\Http\Controllers\InviteController;
+use App\Http\Controllers\ParticipantController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -19,6 +20,11 @@ Route::prefix('/bindboard')->middleware('auth')->group(function () {
 Route::prefix('/bind')->middleware('auth')->group(function () {
     Route::post('/create/{bindboard:hash}', [BindController::class, 'create'])->name('bind.create');
     Route::post('/{bind:bind_path}/play', [BindController::class, 'play'])->middleware('throttle:60,1')->name('bind.play');
+});
+
+
+Route::prefix('/participant')->middleware('auth')->group(function () {
+    Route::delete('/{participant:id}', [ParticipantController::class, 'destroy'])->name('participant.destroy');
 });
 
 

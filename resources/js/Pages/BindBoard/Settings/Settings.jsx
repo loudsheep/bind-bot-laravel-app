@@ -8,7 +8,7 @@ import Invites from './Partials/Invites';
 import UsersPartial from './Partials/Users';
 
 
-export default function BindBoardSettingsPage({ auth, bindboard, guild, invites }) {
+export default function BindBoardSettingsPage({ auth, bindboard, guild, invites, participants }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -42,7 +42,7 @@ export default function BindBoardSettingsPage({ auth, bindboard, guild, invites 
                     </div>
 
                     <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6 mt-10">
-                        <UsersPartial></UsersPartial>
+                        <UsersPartial auth={auth} participants={participants}></UsersPartial>
                     </div>
                 </div>
             </div>
