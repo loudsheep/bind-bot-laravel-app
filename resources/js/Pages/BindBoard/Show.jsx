@@ -70,11 +70,13 @@ export default function Show({ auth, bindboard, binds, permissions, canAddMoreBi
 
         axios.post(route('bind.play', bindToPlay.bind_path)).then(res => {
             let data = res.data;
-            console.log(data);
 
             if (data.status == 200) notifySuccess(data.message);
             else if (data.status == 500) notifyFailure(data.message);
             else notifyFailure(data.message);
+        }).catch(reason => {
+            let status = reason.response.status;
+            if (status == 429) notifyFailure("Slow down there. You're being rate limited");
         });
     };
 

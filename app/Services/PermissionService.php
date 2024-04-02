@@ -17,6 +17,8 @@ class PermissionService
         $userPermissions = $participant->permissions;
         $permissions = config('constants.permissions', []);
 
+        if (($userPermissions & config('constants.permissions.ADMIN')) > 0) return config('constants.permissions', []);
+
         $result = [];
         foreach ($permissions as $key => $value) {
             if (($userPermissions & $value) > 0) {

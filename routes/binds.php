@@ -12,16 +12,13 @@ Route::prefix('/bindboard')->middleware('auth')->group(function () {
     Route::get('/{bindboard:hash}/edit', [BindBoardController::class, 'edit'])->name('bindboard.edit');
     Route::patch('/{bindboard:hash}', [BindBoardController::class, 'update'])->name('bindboard.update');
     Route::delete('/{bindboard:hash}', [BindBoardController::class, 'destroy'])->name('bindboard.destroy');
-
     Route::get('/{bindboard:hash}/bot', [BindBoardController::class, 'bot'])->name('bindboard.bot');
 });
 
 
 Route::prefix('/bind')->middleware('auth')->group(function () {
     Route::post('/create/{bindboard:hash}', [BindController::class, 'create'])->name('bind.create');
-
-    Route::post('/{bind:bind_path}/play', [BindController::class, 'play'])->name('bind.play');
-    Route::get('/{bind:bind_path}/play', [BindController::class, 'play'])->name('bind.play');
+    Route::post('/{bind:bind_path}/play', [BindController::class, 'play'])->middleware('throttle:60,1')->name('bind.play');
 });
 
 
