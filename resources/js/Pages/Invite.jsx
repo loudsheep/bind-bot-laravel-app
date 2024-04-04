@@ -20,7 +20,7 @@ export default function Invite({ auth, invite, bindboard }) {
                 </p>
 
                 <p className='text-xs mt-5'>
-                    Creator and admins of {bindboard.name} might see this info:
+                    Creator and admins of {bindboard.name} will see this info:
                     <ul className='ml-5 list-disc'>
                         <li>Your name</li>
                         <li>Your profile picture</li>

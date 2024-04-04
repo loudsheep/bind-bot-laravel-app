@@ -13,7 +13,9 @@ import { useForm } from '@inertiajs/react';
 
 export default function UsersPartial({ auth, participants }) {
     const handleRemove = (id) => {
-        router.delete(route('participant.destroy', id));
+        if (confirm("Are you sure to remove this user? They will lose access to this BindBoard")) {
+            router.delete(route('participant.destroy', id));
+        }
     };
 
     return (
