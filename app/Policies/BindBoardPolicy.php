@@ -8,6 +8,12 @@ use Illuminate\Auth\Access\Response;
 
 class BindBoardPolicy
 {
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->role === "superadmin") return true;
+        return null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */

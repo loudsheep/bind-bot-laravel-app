@@ -24,6 +24,9 @@ export default {
                 "icon": "#b9bbbe",
                 "icon-hover": "#9ca3af",
             },
+            boxShadow: {
+                "right-void": "inset -100px 0px 18px -74px rgba(29, 178, 216, 1)",
+            }
         },
     },
 

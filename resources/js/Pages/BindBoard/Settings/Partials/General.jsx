@@ -8,15 +8,11 @@ import { toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-export default function GeneralSettings({ bindboard, guild }) {
+export default function GeneralSettings({ bindboard, guild, notifySuccess }) {
     const { data, setData, errors, patch, reset, processing } = useForm({
         name: bindboard.name,
         description: bindboard.description,
         voice_channel: guild ? guild.selected_voice_channel : null,
-    });
-
-    const notifySuccess = (message) => toast.success(message, {
-        position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark", transition: Bounce,
     });
 
     const onSubmit = (e) => {

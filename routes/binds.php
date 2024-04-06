@@ -25,6 +25,7 @@ Route::prefix('/bind')->middleware('auth')->group(function () {
 
 Route::prefix('/participant')->middleware('auth')->group(function () {
     Route::delete('/{participant:id}', [ParticipantController::class, 'destroy'])->name('participant.destroy');
+    Route::patch('/{participant:id}', [ParticipantController::class, 'update'])->name('participant.update');
 });
 
 

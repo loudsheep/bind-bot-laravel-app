@@ -37,6 +37,7 @@ class User extends Authenticatable
         'max_bind_boards',
         'password',
         'remember_token',
+        "role",
     ];
 
     /**

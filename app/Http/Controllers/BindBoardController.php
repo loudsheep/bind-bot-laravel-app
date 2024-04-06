@@ -60,11 +60,18 @@ class BindBoardController extends Controller
         $invites = $bindboard->invites()->where('active', 1)->where('active_until', '>=', Carbon::today())->get()->toArray();
         $participants = $bindboard->participants()->with('user')->get();
 
+        $permissions = config('constants.permissions');
+        unset($permissions['VIEW']);
+        if ($request->user()->id != $bindboard->created_by) {
+            unset($permissions['ADMIN']);
+        }
+
         return Inertia::render('BindBoard/Settings/Settings', [
             'bindboard' => $bindboard,
             'guild' => $guild,
             'invites' => $invites,
             'participants' => $participants,
+            'permissions' => $permissions,
         ]);
     }
 
