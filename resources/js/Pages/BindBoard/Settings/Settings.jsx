@@ -19,31 +19,11 @@ export default function BindBoardSettingsPage({ auth, bindboard, guild, invites,
 
             <div className="py-12 text-font-main">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6">
-                        <div className='w-full flex justify-between'>
-                            <h1 className='text-xl text-icon'>General settings of <span className='font-bold text-font-main'>{bindboard.name}</span> bindboard</h1>
-                            {(!guild || (guild && !guild.verified)) && (
-                                <a href={route('bindboard.bot', bindboard.hash)}>
-                                    <PrimaryButton>Add our bot to your server</PrimaryButton>
-                                </a>
-                            )}
-                        </div>
-                        {bindboard.description && (
-                            <div className='w-full flex justify-start text-icon text-sm'>
-                                <h3>{bindboard.description}</h3>
-                            </div>
-                        )}
+                    <GeneralSettings bindboard={bindboard} guild={guild}></GeneralSettings>
 
-                        <GeneralSettings bindboard={bindboard} guild={guild}></GeneralSettings>
-                    </div>
-
-                    <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6 mt-10">
-                        <Invites bindboard={bindboard} invites={invites}></Invites>
-                    </div>
-
-                    <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6 mt-10">
-                        <UsersPartial auth={auth} participants={participants}></UsersPartial>
-                    </div>
+                    <Invites bindboard={bindboard} invites={invites}></Invites>
+                    
+                    <UsersPartial auth={auth} participants={participants}></UsersPartial>
                 </div>
             </div>
         </AuthenticatedLayout >

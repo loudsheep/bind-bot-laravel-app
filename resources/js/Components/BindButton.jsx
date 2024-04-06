@@ -1,5 +1,5 @@
 const dynamicStyle = (active) => {
-    if (active) return "text-white bg-blue-700 focus:ring-4 hover:bg-blue-800 focus:ring-blue-300 cursor-pointer ";
+    if (active) return "text-white bg-blue-700 hover:bg-blue-800 cursor-pointer ";
     return "text-gray-300 bg-gray-400 cursor-not-allowed ";
 };
 
@@ -13,7 +13,7 @@ export default function BindButton({ onClickMain, onClickDelete = () => { }, cla
     };
 
     return (
-        <div className={" focus:outline-none font-medium rounded-lg text-sm  text-center inline-flex justify-between items-center me-3 min-w-full sm:min-w-64 mb-3 " + dynamicStyle(active) + className} disabled={true}>
+        <div className={" focus:outline-none font-medium rounded-lg text-sm  text-center inline-flex justify-between items-center min-w-full sm:min-w-64 " + dynamicStyle(active) + className} disabled={true}>
             <div className="inline-flex items-center py-2.5 pl-5 whitespace-nowrap overflow-hidden text-ellipsis mr-1" style={{ flex: "9" }} onClick={clickMain}>
                 <span className="material-symbols-outlined">
                     graphic_eq
@@ -21,7 +21,7 @@ export default function BindButton({ onClickMain, onClickDelete = () => { }, cla
                 {bindName}
             </div>
             {showDeleteButton && (
-                <button className={"h-full rounded-r-lg flex justify-center items-center px-1" + dynamicStyle(active)} style={{ flex: "1" }} onClick={clickDelete}>
+                <button className={"h-full rounded-r-lg flex justify-center items-center px-1 " + dynamicStyle(active)} style={{ flex: "1" }} onClick={clickDelete}>
                     <span className="material-symbols-outlined">
                         close
                     </span>

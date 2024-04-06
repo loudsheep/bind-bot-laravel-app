@@ -67,38 +67,40 @@ export default function Dashboard({ auth, authoredBindBoards, sharedBindBoards, 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-background overflow-hiddensm:rounded-lg p-6">
-                        <div className='flex justify-between items-center pb-3 mb-10 text-font-main border-b border-background-secondary'>
+                        <div className='flex justify-between items-center pb-3 text-font-main border-b border-background-secondary'>
                             <h1 className='font-bold text-3xl'>Your BindBoards</h1>
                             <PrimaryButton className={!canCreateBindboards ? 'cursor-not-allowed' : ''} disabled={!canCreateBindboards} onClick={() => setShowNewBindBoardModal(true)}>Add new BindBoard</PrimaryButton>
                         </div>
-                        <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-                            {authoredBindBoards.map((value, idx) => (
-                                <a href={route('bindboard.show', value.hash)} key={idx} className="block p-6 bg-background border border-background-secondary text-font-main rounded-lg shadow hover:bg-background-secondary" title={value.name}>
-                                    <h5 className="text-2xl font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis">{value.name}</h5>
-                                </a>
-                            ))}
-                            {authoredBindBoards.length == 0 && (
-                                <p className='text-icon'>Nothing to show</p>
-                            )}
-                        </div>
+                        {authoredBindBoards.length == 0 ? (
+                            <p className='text-icon mt-5'>Nothing to show</p>
+                        ) : (
+                            <div className='mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                                {authoredBindBoards.map((value, idx) => (
+                                    <a href={route('bindboard.show', value.hash)} key={idx} className="block p-6 bg-background border border-background-secondary text-font-main rounded-lg shadow hover:bg-background-secondary" title={value.name}>
+                                        <h5 className="text-2xl font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis">{value.name}</h5>
+                                    </a>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-20">
                     <div className="bg-background overflow-hidden sm:rounded-lg p-6">
-                        <div className='flex justify-between items-center pb-3 mb-10 text-font-main border-b border-background-secondary'>
+                        <div className='flex justify-between items-center pb-3 text-font-main border-b border-background-secondary'>
                             <h1 className='font-bold text-3xl'>BindBoards shared with You:</h1>
                         </div>
-                        <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-                            {sharedBindBoards.map((value, idx) => (
-                                <a href={route('bindboard.show', value.hash)} key={idx} className="block p-6 bg-background border border-background-secondary text-font-main rounded-lg shadow hover:bg-background-secondary" title={value.name}>
-                                    <h5 className="text-2xl font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis">{value.name}</h5>
-                                </a>
-                            ))}
-                            {sharedBindBoards.length == 0 && (
-                                <p className='text-icon'>Nothing to show</p>
-                            )}
-                        </div>
+                        {sharedBindBoards.length == 0 ? (
+                            <p className='text-icon mt-5'>Nothing to show</p>
+                        ) : (
+                            <div className='mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                                {sharedBindBoards.map((value, idx) => (
+                                    <a href={route('bindboard.show', value.hash)} key={idx} className="block p-6 bg-background border border-background-secondary text-font-main rounded-lg shadow hover:bg-background-secondary" title={value.name}>
+                                        <h5 className="text-2xl font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis">{value.name}</h5>
+                                    </a>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

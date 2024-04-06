@@ -31,7 +31,7 @@ export default function Invites({ bindboard, invites }) {
     };
 
     return (
-        <>
+        <div className="mt-20">
             <Modal show={showNewInviteModal} onClose={onCloseNewInviteModal} maxWidth='md'>
                 <div className="relative rounded-lg shadow">
                     <div className="flex items-center justify-between p-4 md:p-5 border-b border-background-secondary rounded-t">
@@ -65,12 +65,14 @@ export default function Invites({ bindboard, invites }) {
                 </div>
             </Modal>
 
-            <div className='w-full flex justify-between'>
-                <h1 className='font-semi-bold text-xl'>Invitations</h1>
-                <PrimaryButton onClick={() => setShowNewInviteModal(true)}>Invite</PrimaryButton>
-            </div>
-            <div className='w-full flex justify-start text-icon text-sm'>
-                <h3>Active invitations</h3>
+            <div className='flex flex-col justify-between items-center pb-3 text-font-main border-b border-background-secondary'>
+                <div className='w-full flex justify-between'>
+                    <h1 className='font-semi-bold text-xl'>Invitations</h1>
+                    <PrimaryButton onClick={() => setShowNewInviteModal(true)}>Invite</PrimaryButton>
+                </div>
+                <div className='w-full flex justify-start text-icon text-sm'>
+                    <h3>Active invitations</h3>
+                </div>
             </div>
 
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-5 border border-background-secondary">
@@ -120,6 +122,6 @@ export default function Invites({ bindboard, invites }) {
                 </table>
             </div>
 
-        </>
+        </div>
     )
 }

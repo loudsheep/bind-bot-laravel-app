@@ -38,7 +38,7 @@ class BindBoardController extends Controller
         $this->authorize('create', BindBoard::class);
         $request->validate([
             'name' => ['required', 'string', 'min:2', 'max:50'],
-            'description' => ['nullable', 'string', 'min:2', 'max:200'],
+            'description' => ['nullable', 'string', 'min:2', 'max:150'],
         ]);
 
         // TODO max_allowed_binds

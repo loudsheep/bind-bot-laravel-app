@@ -19,12 +19,14 @@ export default function UsersPartial({ auth, participants }) {
     };
 
     return (
-        <>
-            <div className='w-full flex justify-between'>
-                <h1 className='font-semi-bold text-xl'>User menagement</h1>
-            </div>
-            <div className='w-full flex justify-start text-icon text-sm'>
-                <h3>Users and their permissions</h3>
+        <div className="mt-20">
+            <div className='flex flex-col justify-between items-center pb-3 text-font-main border-b border-background-secondary'>
+                <div className='w-full flex justify-between'>
+                    <h1 className='font-semi-bold text-xl'>User menagement</h1>
+                </div>
+                <div className='w-full flex justify-start text-icon text-sm'>
+                    <h3>Users and their permissions</h3>
+                </div>
             </div>
 
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-5 border border-background-secondary">
@@ -66,6 +68,6 @@ export default function UsersPartial({ auth, participants }) {
                     </tbody>
                 </table>
             </div>
-        </>
+        </div>
     )
 }
