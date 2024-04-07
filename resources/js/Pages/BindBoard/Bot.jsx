@@ -1,11 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
 import { Head } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
-import SelectInput from '@/Components/SelectInput';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -48,13 +44,16 @@ export default function BindBoardBotPage({ auth, bindboard, guild, botUrl }) {
 
                         <div className='w-full flex justify-center pt-4'>
                             <a href={botUrl} target='_blank'>
-                                <div className='border bg-background-secondary border-background-secondary py-2 px-10 rounded-md'>
-                                    <div class="relative flex items-center">
+                                <div className='flex  items-center border bg-background-secondary border-background-secondary py-2 rounded-md'>
+                                    <div class="relative flex items-center mx-5">
                                         <img class="w-10 h-10 rounded-full" src="/binder_logo_transparent.png" alt="" />
                                         <span class="bottom-0 left-7 absolute w-3.5 h-3.5 bg-green-400 border-[2.5px] border-background rounded-full"></span>
                                         <span className='text-xl ml-3'>Bind-er</span>
                                         <div className='text-xs ml-2 mt-0.5 px-[2px] py-[1px] bg-primary rounded-sm'>BOT</div>
                                     </div>
+                                    <span class="material-symbols-outlined pr-5">
+                                        add_link
+                                    </span>
                                 </div>
                             </a>
                         </div>

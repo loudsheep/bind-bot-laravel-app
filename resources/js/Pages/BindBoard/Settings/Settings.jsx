@@ -1,6 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import PrimaryButton from '@/Components/PrimaryButton';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GeneralSettings from './Partials/General';
@@ -26,9 +25,9 @@ export default function BindBoardSettingsPage({ auth, bindboard, guild, invites,
 
             <div className="py-12 text-font-main">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <GeneralSettings bindboard={bindboard} guild={guild} notifySuccess={notifySuccess}></GeneralSettings>
+                    <GeneralSettings bindboard={bindboard} guild={guild} notifySuccess={notifySuccess} notifyFailure={notifyFailure}></GeneralSettings>
 
-                    <Invites bindboard={bindboard} invites={invites}></Invites>
+                    <Invites bindboard={bindboard} invites={invites} notifySuccess={notifySuccess}></Invites>
 
                     <UsersPartial auth={auth} participants={participants} permissions={permissions} notifySuccess={notifySuccess} notifyFailure={notifyFailure}></UsersPartial>
                 </div>

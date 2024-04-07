@@ -2,13 +2,14 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import SelectInput from '@/Components/SelectInput';
-import { toast, Bounce } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
+import { useState } from 'react';
 
 
-export default function GeneralSettings({ bindboard, guild, notifySuccess }) {
+export default function GeneralSettings({ bindboard, guild, notifySuccess, notifyFailure }) {
+    const [voiceChannels, setVoiceChannels] = useState(JSON.parse(guild.voice_channels));
     const { data, setData, errors, patch, reset, processing } = useForm({
         name: bindboard.name,
         description: bindboard.description,
@@ -20,6 +21,21 @@ export default function GeneralSettings({ bindboard, guild, notifySuccess }) {
 
         patch(route('bindboard.update', bindboard.hash), {
             onSuccess: () => notifySuccess("Settings updated!"),
+        });
+    };
+
+    const reloadChannels = () => {
+        axios.post(route('guild.reload', bindboard.hash)).then(res => {
+            let data = res.data;
+            if (data.status == 200) notifySuccess(data.message);
+            else notifyFailure(data.message);
+
+            console.log(data, JSON.parse(data.data));
+            setVoiceChannels(JSON.parse(data.data));
+        }).catch(reason => {
+            console.log(reason);
+            let status = reason.response.status;
+            if (status == 429) notifyFailure(reason.response.message);
         });
     };
 
@@ -43,7 +59,7 @@ export default function GeneralSettings({ bindboard, guild, notifySuccess }) {
 
             <div className='w-full mt-5 flex flex-wrap mx-auto'>
                 <form onSubmit={onSubmit} className='w-full'>
-                    <div className='w-full flex flex-wrap'>
+                    <div className='w-full flex flex-wrap items-end'>
                         <div className='flex-1 min-w-48 mx-1 mb-2'>
                             <InputLabel htmlFor="name" value="Bindboard name:" />
 
@@ -60,14 +76,19 @@ export default function GeneralSettings({ bindboard, guild, notifySuccess }) {
                         </div>
 
                         <div className='flex-1 min-w-48 mx-1 mb-2'>
-                            <InputLabel htmlFor="name" value="Voice channel to play binds:" />
+                            <InputLabel htmlFor="name" className='flex items-center' disabled={!guild?.voice_channels}>
+                                Voice channel to play binds:
+                                <span class={"material-symbols-outlined text-green-400 scale-[.9] " + (guild?.voice_channels ? "cursor-pointer hover:text-font-main" : "text-background-secondary")} onClick={reloadChannels}>
+                                    cached
+                                </span>
+                            </InputLabel>
 
-                            <SelectInput id="voice_channel" onChange={(e) => setData('voice_channel', e.target.value)} className="mt-1 block w-full" value={data.voice_channel} disabled={!guild?.voice_channels}>
+                            <SelectInput id="voice_channel" onChange={(e) => setData('voice_channel', e.target.value)} className="mt-1 block w-full" value={data.voice_channel} disabled={!voiceChannels}>
                                 <option value="" disabled selected={true}>Select voice channel</option>
 
-                                {guild?.voice_channels && (
+                                {voiceChannels && (
                                     <>
-                                        {JSON.parse(guild.voice_channels).map((value, idx) => (
+                                        {voiceChannels.map((value, idx) => (
                                             <option value={value.channelId} key={idx}>{value.name}</option>
                                         ))}
                                     </>

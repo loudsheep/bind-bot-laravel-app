@@ -1,7 +1,6 @@
 import PrimaryButton from '@/Components/PrimaryButton';
 import 'react-toastify/dist/ReactToastify.css';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import Modal from '@/Components/Modal';
 import InputError from '@/Components/InputError';
@@ -10,7 +9,7 @@ import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 
 
-export default function Invites({ bindboard, invites }) {
+export default function Invites({ bindboard, invites, notifySuccess }) {
     const [showNewInviteModal, setShowNewInviteModal] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         active_for: 7,
@@ -24,6 +23,11 @@ export default function Invites({ bindboard, invites }) {
         post(route('invite.store', bindboard.hash), {
             onSuccess: () => onCloseNewInviteModal(),
         });
+    };
+
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text);
+        notifySuccess("Copied!");
     };
 
     const handleDelete = (hash) => {
@@ -99,10 +103,15 @@ export default function Invites({ bindboard, invites }) {
                     <tbody>
                         {invites.map((value, idx) => (
                             <tr className="bg-background border-t border-background-secondary" key={idx}>
-                                <th scope="row" className="px-6 py-4 font-medium text-icon whitespace-nowrap">
+                                <th scope="row" className="px-6 py-4 font-medium text-icon whitespace-nowrap flex items-center">
                                     <a href={route('invite.show', value.hash)} target='_black'>
                                         {route('invite.show', value.hash)}
                                     </a>
+                                    <button className='p-0.5 border rounded-lg border-background-secondary flex justify-center items-center mx-1 hover:border-icon text-background-secondary hover:text-icon' onClick={() => copyToClipboard(route('invite.show', value.hash))}>
+                                        <span class="material-symbols-outlined">
+                                            content_copy
+                                        </span>
+                                    </button>
                                 </th>
                                 <td className="px-6 py-4">
                                     {new Date(value.active_until).toLocaleDateString()}

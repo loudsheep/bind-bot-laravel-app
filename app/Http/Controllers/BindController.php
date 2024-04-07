@@ -41,7 +41,6 @@ class BindController extends Controller
     public function file(Request $request, Bind $bind)
     {
         $this->authorize('view', $bind);
-        // TODO authorization
         if (!$bind->active) return abort(404);
         return response()->file(Storage::path('binds/' . $bind->bind_path));
     }
@@ -49,7 +48,6 @@ class BindController extends Controller
     public function play(Request $request, Bind $bind)
     {
         $this->authorize('play', $bind);
-        // TODO authorization
         if (!$bind->active || $bind->bindBoard->guild == null || $bind->bindBoard->guild->selected_voice_channel == null)
             return json_encode(['status' => 403, 'message' => 'This action is unauthorized']);
 
@@ -63,15 +61,13 @@ class BindController extends Controller
                 ]),
             ]);
 
-            $bind->use_count++;
-            $bind->save();
+            $bind->increment('use_count');
 
             return $response->json();
         } catch (Exception $e) {
             return json_encode(['status' => 500, 'message' => 'Something went wrong. Try again later']);
         }
 
-        // TODO: response status sent to web client
         return json_encode(['status' => 200, 'message' => 'Successfully played bind on server']);
     }
 }

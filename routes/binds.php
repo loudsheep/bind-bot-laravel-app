@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BindBoardController;
 use App\Http\Controllers\BindController;
+use App\Http\Controllers\GuildController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ParticipantController;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +19,7 @@ Route::prefix('/bindboard')->middleware('auth')->group(function () {
 
 
 Route::prefix('/bind')->middleware('auth')->group(function () {
-    Route::post('/create/{bindboard:hash}', [BindController::class, 'create'])->name('bind.create');
+    Route::post('/{bindboard:hash}/create', [BindController::class, 'create'])->name('bind.create');
     Route::post('/{bind:bind_path}/play', [BindController::class, 'play'])->middleware('throttle:60,1')->name('bind.play');
 });
 
@@ -34,6 +35,10 @@ Route::prefix('/invite')->middleware('auth')->group(function () {
     Route::get('/{invite:hash}', [InviteController::class, 'show'])->name('invite.show');
     Route::get('/{invite:hash}/accept', [InviteController::class, 'accept'])->name('invite.accept');
     Route::delete('/{invite:hash}', [InviteController::class, 'destroy'])->name('invite.destroy');
+});
+
+Route::prefix('/guild')->middleware('auth')->group(function () {
+    Route::post('/{bindboard:hash}/reload', [GuildController::class, 'reload'])->name('guild.reload');
 });
 
 
