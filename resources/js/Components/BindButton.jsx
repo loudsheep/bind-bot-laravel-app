@@ -2,6 +2,8 @@ import Modal from '@/Components/Modal';
 import { useState, useEffect } from 'react';
 import SecondaryButton from '@/Components/SecondaryButton';
 import axios from 'axios';
+import DangerButton from './DangerButton';
+import { router } from '@inertiajs/react';
 
 
 export default function BindButton({ className, permissions, canPlayBindUsingBot, bind, notifySuccess, notifyFailure }) {
@@ -43,6 +45,14 @@ export default function BindButton({ className, permissions, canPlayBindUsingBot
     };
 
     const clickDelete = () => {
+        if(confirm("Yuo sure?")) {
+            router.delete(route('bind.destroy', bind.bind_path), {
+                onSuccess: () => {
+                    notifySuccess("Deleted");
+                    onClosePlayBindModal();
+                },
+            });
+        }
     };
 
     useEffect(() => {
@@ -90,6 +100,12 @@ export default function BindButton({ className, permissions, canPlayBindUsingBot
                                 <SecondaryButton className='flex-1 justify-center mr-1' onClick={playAudio}>Play here</SecondaryButton>
                                 <SecondaryButton className={'flex-1 justify-center ml-1 ' + (permissions.PLAY_BIND_ON_SERVER && canPlayBindUsingBot ? '' : 'cursor-not-allowed')} disabled={!(permissions.PLAY_BIND_ON_SERVER && canPlayBindUsingBot)} onClick={playOnServer}>Play on server</SecondaryButton>
                             </div>
+
+                            {permissions.DELETE_BIND && (
+                                <div className='w-full flex'>
+                                    <DangerButton className='flex-1 justify-center mt-2' onClick={clickDelete}>Delete</DangerButton>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </Modal>

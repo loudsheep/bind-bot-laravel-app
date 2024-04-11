@@ -21,6 +21,7 @@ Route::prefix('/bindboard')->middleware('auth')->group(function () {
 Route::prefix('/bind')->middleware('auth')->group(function () {
     Route::post('/{bindboard:hash}/create', [BindController::class, 'create'])->name('bind.create');
     Route::post('/{bind:bind_path}/play', [BindController::class, 'play'])->middleware('throttle:60,1')->name('bind.play');
+    Route::delete('/{bind:bind_path}', [BindController::class, 'destroy'])->name('bind.destroy');
 });
 
 

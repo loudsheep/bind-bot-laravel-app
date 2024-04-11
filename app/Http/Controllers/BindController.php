@@ -38,6 +38,16 @@ class BindController extends Controller
         return redirect()->back();
     }
 
+    public function destroy(Request $request, Bind $bind)
+    {
+        $this->authorize('delete', $bind);
+
+        Storage::delete(Storage::path('binds/' . $bind->bind_path));
+        $bind->delete();
+
+        return back();
+    }
+
     public function file(Request $request, Bind $bind)
     {
         $this->authorize('view', $bind);
