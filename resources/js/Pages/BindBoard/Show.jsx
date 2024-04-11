@@ -16,10 +16,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Show({ auth, bindboard, binds, permissions, canAddMoreBinds, canPlayBindUsingBot }) {
     const [showNewBindModal, setShowNewBindModal] = useState(false);
-    const [showPlayBindModal, setShowPlayBindModal] = useState(false);
-    const [bindToPlay, setBindToPlay] = useState(null);
-    const [audio, setAudio] = useState(null);
-    const [playing, setPlaying] = useState(false);
+
     const notifySuccess = (messsage) => toast.success(messsage, {
         position: "top-right", autoClose: 4000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark", transition: Bounce,
     });
@@ -36,16 +33,6 @@ export default function Show({ auth, bindboard, binds, permissions, canAddMoreBi
         setShowNewBindModal(false);
         reset("name", "bind");
     }
-    const onClosePlayBindModal = () => {
-        setShowPlayBindModal(false);
-        setPlaying(false);
-    };
-
-    const openPlayModal = (bind) => {
-        setShowPlayBindModal(true);
-        setBindToPlay(bind);
-        setAudio(new Audio(route('bind.file', bind.bind_path)));
-    };
 
     const submit = (e) => {
         e.preventDefault();
@@ -55,44 +42,6 @@ export default function Show({ auth, bindboard, binds, permissions, canAddMoreBi
             },
         });
     };
-
-    const playAudio = () => {
-        setPlaying(true);
-
-        if (audio) {
-            audio.currentTime = 0;
-            audio.play();
-        }
-    };
-
-    const playOnServer = () => {
-        if (!audio || !bindToPlay) return;
-
-        axios.post(route('bind.play', bindToPlay.bind_path)).then(res => {
-            let data = res.data;
-
-            if (data.status == 200) notifySuccess(data.message);
-            else if (data.status == 500) notifyFailure(data.message);
-            else notifyFailure(data.message);
-        }).catch(reason => {
-            let status = reason.response.status;
-            if (status == 429) notifyFailure("Slow down there. You're being rate limited");
-        });
-    };
-
-    useEffect(() => {
-        if (audio) {
-            playing ? audio.play() : audio.pause();
-        }
-    }, [playing]);
-
-    useEffect(() => {
-        if (!audio) return;
-        audio.addEventListener('ended', () => setPlaying(false));
-        return () => {
-            audio.removeEventListener('ended', () => setPlaying(false));
-        };
-    }, [audio]);
 
     return (
         <AuthenticatedLayout
@@ -137,37 +86,6 @@ export default function Show({ auth, bindboard, binds, permissions, canAddMoreBi
                 </div>
             </Modal>
 
-            <Modal show={showPlayBindModal && bindToPlay !== null} onClose={onClosePlayBindModal} maxWidth='md' >
-                <div className="relative bg-background border border-background-secondary rounded-lg shadow">
-                    <div className="flex items-center justify-between p-4 md:p-5 border-b border-background-secondary rounded-t">
-                        <h3 className="text-xl font-bold text-font-main">
-                            {bindToPlay?.name}
-                        </h3>
-                        <button type="button" className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="authentication-modal" onClick={onClosePlayBindModal}>
-                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                            </svg>
-                            <span className="sr-only">Close modal</span>
-                        </button>
-                    </div>
-                    <div className="p-4 md:p-5">
-                        {bindToPlay != null && (
-                            <div className='w-full flex justify-center items-center mb-5'>
-                                <audio controls={true}>
-                                    <source src={route('bind.file', bindToPlay.bind_path)} type="audio/mpeg" />
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </div>
-                        )}
-
-                        <div className='w-full flex'>
-                            <SecondaryButton className='flex-1 justify-center mr-1' onClick={playAudio}>Play here</SecondaryButton>
-                            <SecondaryButton className={'flex-1 justify-center ml-1 ' + (permissions.PLAY_BIND_ON_SERVER && canPlayBindUsingBot ? '' : 'cursor-not-allowed')} disabled={!(permissions.PLAY_BIND_ON_SERVER && canPlayBindUsingBot)} onClick={playOnServer}>Play on server</SecondaryButton>
-                        </div>
-                    </div>
-                </div>
-            </Modal>
-
             <div className="py-12 text-font-main">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-background border border-background-secondary overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -195,7 +113,7 @@ export default function Show({ auth, bindboard, binds, permissions, canAddMoreBi
                         )}
                         <div className='mt-10 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
                             {binds.map((value, idx) => (
-                                <BindButton title={value.name} bindName={value.name} key={idx} onClickMain={() => openPlayModal(value)} showDeleteButton={permissions.DELETE_BIND} active={value.active == 1}></BindButton>
+                                <BindButton key={idx} permissions={permissions} canPlayBindUsingBot={canPlayBindUsingBot} bind={value} notifySuccess={notifySuccess} notifyFailure={notifyFailure}></BindButton>
                             ))}
                         </div>
                     </div>
