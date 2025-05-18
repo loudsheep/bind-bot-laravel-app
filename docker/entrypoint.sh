@@ -1,13 +1,17 @@
 #!/bin/bash
 
-# Fix permissions for storage and cache dirs (volumes may override Dockerfile settings)
-mkdir -p /var/www/html/storage/logs
-mkdir -p /var/www/html/bootstrap/cache
+# If the storage/logs directory doesn't exist (likely a fresh volume), copy default structure
+if [ ! -d "/var/www/html/storage/logs" ]; then
+    echo "Storage directory missing — copying default Laravel storage directory..."
+    cp -r /var/www/html/storage-default/* /var/www/html/storage/
+fi
+
+# Ensure correct permissions
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Ensure Laravel storage symlink exists
+# Ensure symlink
 php artisan storage:link || true
 
-# Start Supervisor (PHP-FPM + Nginx)
+# Start supervisord
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

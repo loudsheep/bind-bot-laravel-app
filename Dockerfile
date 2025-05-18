@@ -69,6 +69,9 @@ COPY --from=frontend /app/public/build ./public/build
 # Install PHP dependencies (after extensions are available)
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+# Save original Laravel storage dir for later copying
+RUN cp -r storage /var/www/html/storage-default
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
