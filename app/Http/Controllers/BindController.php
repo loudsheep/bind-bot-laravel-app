@@ -65,7 +65,7 @@ class BindController extends Controller
         try {
             $response = Http::post($apiUrl . '/play', [
                 'body' => json_encode([
-                    "url" => Storage::path('binds/' . $bind->bind_path),
+                    "url" => route('bind.file', $bind),
                     "guildId" => $bind->bindBoard->guild->guildId,
                     "channelId" => $bind->bindBoard->guild->selected_voice_channel,
                 ]),

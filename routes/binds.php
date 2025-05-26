@@ -43,4 +43,4 @@ Route::prefix('/guild')->middleware('auth')->group(function () {
 });
 
 
-Route::get('/binds/{bind:bind_path}', [BindController::class, 'file'])->middleware('auth')->name('bind.file');
+Route::get('/binds/{bind:bind_path}', [BindController::class, 'file'])->name('bind.file');
