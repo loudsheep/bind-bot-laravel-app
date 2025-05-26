@@ -50,7 +50,7 @@ class BindController extends Controller
 
     public function file(Request $request, Bind $bind)
     {
-        $this->authorize('view', $bind);
+        // $this->authorize('view', $bind);
         if (!$bind->active) return abort(404);
         return response()->file(Storage::path('binds/' . $bind->bind_path));
     }
